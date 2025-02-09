@@ -145,7 +145,7 @@ public class OAuth2Service {
 
     private void checkRefreshToken(String refreshToken){
         String uuid = jwtUtil.getUUID(refreshToken);
-        if(jwtUtil.isRefreshExpired(refreshToken) || jwtStoreService.containKey(uuid)){
+        if(jwtUtil.isRefreshExpired(refreshToken) || !jwtStoreService.containKey(uuid)){
             throw new TokenInvalidException("Refresh Token Expired");
         }else{
             jwtStoreService.deleteByKey(uuid);

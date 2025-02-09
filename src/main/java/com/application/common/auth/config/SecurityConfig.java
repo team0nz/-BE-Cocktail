@@ -46,7 +46,7 @@ public class SecurityConfig {
                         .requestMatchers("/login/oauth2/code/google", "/login/oauth2/code/naver").permitAll()
                         .requestMatchers("/api/auth/naver/token", "/api/auth/google/token").permitAll()
                         .requestMatchers("/api/auth/naver/login-url", "/api/auth/google/login-url").permitAll()
-                        .requestMatchers("/api/public/**").permitAll()
+                        .requestMatchers("/api/public/**", "/error").permitAll()
                         .anyRequest().authenticated());
 
         http
