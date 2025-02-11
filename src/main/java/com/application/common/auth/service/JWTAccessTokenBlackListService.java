@@ -1,5 +1,6 @@
 package com.application.common.auth.service;
 
+import com.application.common.Constant;
 import com.application.common.auth.dto.oauth2Dto.JWTAccessBlackListDto;
 import com.application.common.auth.jwt.JWTAccessBlackListStore;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +29,8 @@ public class JWTAccessTokenBlackListService {
     }
 
 
-    @Scheduled(fixedRate = 15*60L*1000L)
-    public void deleteByExpired(){
+    @Scheduled(fixedRate = Constant.BLACKLIST_EXPIRED_TIME)
+    public void blackListExpired(){
 
         List<String> keys = jwtAccessBlackListStore.findAllKeySet();
         for (String key : keys) {

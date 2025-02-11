@@ -7,7 +7,8 @@ import java.util.Optional;
 @Getter
 public enum Gender {
     MALE("male"),
-    FEMALE("female");
+    FEMALE("female"),
+    NONE("none");
 
     private String english;
 

@@ -1,5 +1,6 @@
 package com.application.common.auth.service;
 
+import com.application.common.Constant;
 import com.application.common.auth.dto.oauth2Dto.JWTStoreDto;
 import com.application.common.auth.jwt.JWTRefreshStore;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -45,8 +46,8 @@ public class JWTStoreService {
         }
     }
 
-    @Scheduled(fixedRate =  1*24*60*60L) // 2주관리
-    public void isAccessExpired(){
+    @Scheduled(fixedRate = Constant.REFRESH_EXPIRED_TIME) // 2주관리
+    public void isRefreshExpired(){
         jwtRefreshStore.getJwtStore().entrySet().removeIf(entry ->
                 Duration.between(entry.getValue().getCreateTime(), LocalDateTime.now()).toMinutes() > 14* 24* 60);
     }

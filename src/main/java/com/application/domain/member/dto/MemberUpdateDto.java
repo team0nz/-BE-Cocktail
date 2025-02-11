@@ -9,7 +9,7 @@ import lombok.Data;
 public class MemberUpdateDto {
 
     @NotNull
-    @Pattern(regexp = "^(?i)(male|femaile)$", message="Invalid gender. Must be 'male' or 'female'")
+    @Pattern(regexp = "^(?i)(male|femaile|none)$", message="Invalid gender. Must be 'male' or 'female' or 'none'")
     private String gender;
     @NotNull
     private String nickName;
