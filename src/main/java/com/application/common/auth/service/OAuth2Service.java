@@ -124,7 +124,6 @@ public class OAuth2Service {
             newMember.setNickname(name);
             newMember.setEmail((String)userInfo.get("email"));
             newMember.setRole(Role.USER);
-            newMember.setCreateTime(LocalDateTime.now());
 
             memberService.saveMember(newMember);
         }else{
