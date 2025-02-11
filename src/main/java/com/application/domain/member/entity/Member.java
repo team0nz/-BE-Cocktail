@@ -1,5 +1,6 @@
 package com.application.domain.member.entity;
 
+import com.application.common.time.BaseTimeEntity;
 import com.application.domain.member.enums.Gender;
 import com.application.domain.member.enums.Role;
 import jakarta.persistence.*;
@@ -8,11 +9,13 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @Getter
 @Setter
 @RequiredArgsConstructor
 @Entity(name="member")
-public class Member {
+public class Member extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,8 +37,6 @@ public class Member {
     private String profile;
     @Column(name="role", nullable = false)
     private Role role;// Admin, User, Other
-    @Column(name="create_time", nullable = false)
-    private LocalDateTime createTime;
 
 
     @Builder
