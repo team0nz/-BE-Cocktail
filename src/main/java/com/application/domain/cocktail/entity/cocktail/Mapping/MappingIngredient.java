@@ -17,4 +17,10 @@ public class MappingIngredient {
     @ManyToOne
     @JoinColumn(name="cocktail_id", nullable = false)
     private Cocktail cocktail;
+
+    @Column
+    private Double quantity;
+
+    @Column
+    private String unit;
 }

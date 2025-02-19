@@ -9,7 +9,5 @@ public class Ingredient {
     private Long id;
     @Column
     private String material;
-    @Column
-    private String size;
 
 }

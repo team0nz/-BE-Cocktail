@@ -8,7 +8,7 @@ public class TasteDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name="taste_id")
+    @JoinColumn
     private TasteCategory tasteCategory;
     @Column(name="taste_detail")
     private String tasteDetail;

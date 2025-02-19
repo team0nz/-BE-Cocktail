@@ -13,5 +13,7 @@ public class Cocktail {
     @Column
     private String recipe;
     @Column(nullable = false)
-    private Integer alchol;
+    private Integer maxAlchol;
+    @Column(nullable = false)
+    private Integer minAlchol;
 }

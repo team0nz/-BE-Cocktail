@@ -1,6 +1,7 @@
 package com.application.domain.cocktail.entity.cocktail;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +12,8 @@ public class TasteCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
-    private String taste;
+    private String tasteCategory;
     @OneToMany(mappedBy = "tasteCategory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TasteDetail> details = new ArrayList<>();
+
 }
