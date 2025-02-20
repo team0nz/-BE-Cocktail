@@ -16,10 +16,10 @@ INSERT taste_category INTO VALUES (3, "쌉싸름한 맛")
 INSERT taste_category INTO VALUES (4, "강렬한 맛")
 
 -- 마티니 칵테일 재료
-INSERT Ingredient INTO VALUES (1, "진 (GIN)")
-INSERT Ingredient INTO VALUES (2, "드라이 베르무트 (DRY VERMOUTH)")
-INSERT Ingredient INTO VALUES (3, "올리브 (OLIVE)")
-INSERT Ingredient INTO VALUES (4, "레몬 필 (LEMON PEAL)")
+INSERT ingredient INTO VALUES (1, "진 (GIN)")
+INSERT ingredient INTO VALUES (2, "드라이 베르무트 (DRY VERMOUTH)")
+INSERT ingredient INTO VALUES (3, "올리브 (OLIVE)")
+INSERT ingredient INTO VALUES (4, "레몬 필 (LEMON PEAL)")
 
 -- 마티니 외 다른 칵테일 재료
 INSERT INTO ingredient (id, material) VALUES (5, '라이 위스키 (RYE WHISKEY)');
@@ -44,5 +44,16 @@ INSERT INTO ingredient (id, material) VALUES (21, '파인애플 주스 (PINEAPPL
 INSERT INTO ingredient (id, material) VALUES (22, '오렌지 필 (ORANGE PEEL)');
 INSERT INTO ingredient (id, material) VALUES (23, '오렌지 슬라이스 (ORANGE SLICE)');
 INSERT INTO ingredient (id, material) VALUES (24, '파인애플 슬라이스 (PINEAPPLE SLICE)');
+
+
+INSERT INTO cocktail (id, cocktailName, cocktailSize, introduce, maxAlchol, minAlchol) VALUES (1, "마티니", 120, "단순하지만 완벽한 클래식 칵테일", 32, 30);
+INSERT INTO cocktail (id, cocktailName, cocktailSize, introduce, maxAlchol, minAlchol) VALUES (2, "맨해튼", 90, "깊고 부드러운 위스키와 스위트 베르무트의 조화", 33, 30);
+INSERT INTO cocktail (id, cocktailName, cocktailSize, introduce, maxAlchol, minAlchol) VALUES (3, "네그로니", 90, "쓰고 달콤한, 이탈리아 감서으이 한 잔", 24, 26);
+INSERT INTO cocktail (id, cocktailName, cocktailSize, introduce, maxAlchol, minAlchol) VALUES (4, "올드 패션드", 90, "위스키 본연의 맛을 즐길 수 있는 전통 칵테일", 35, 32);
+INSERT INTO cocktail (id, cocktailName, cocktailSize, introduce, maxAlchol, minAlchol) VALUES (5, "모히토", 250, "상쾌한 민트와 라임이 만드는 청량한 한 잔", 13, 10);
+INSERT INTO cocktail (id, cocktailName, cocktailSize, introduce, maxAlchol, minAlchol) VALUES (6, "아페롤 스프리츠", 250, "가벼운 달콤 쌉싸름한 맛과 스파클리의 조화", 12, 10);
+INSERT INTO cocktail (id, cocktailName, cocktailSize, introduce, maxAlchol, minAlchol) VALUES (7, "다이키리", 120, "럼과 라임의 깔끔한 조화, 쿠바 스타일 칵테일", 20, 18);
+INSERT INTO cocktail (id, cocktailName, cocktailSize, introduce, maxAlchol, minAlchol) VALUES (7, "피나콜라다", 300, "코코넛과 파인애플이 어우러진 달콤한 휴양지 칵테일", 15, 13);
+
 
 
