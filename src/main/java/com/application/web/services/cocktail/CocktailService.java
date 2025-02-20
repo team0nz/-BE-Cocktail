@@ -14,9 +14,6 @@ import java.util.List;
 public class CocktailService {
     private final TasteCategoryRepository tasteCategoryRepository;
 
-    //칵테일 정보 저장
-    // -> 웹페이지를 띄워서 선택하게 해야겠다
-
     //칵테일 맛 카테고리 전체조회
     public List<TasteCategory> getTasteCategory(){
         return tasteCategoryRepository.findAll();
