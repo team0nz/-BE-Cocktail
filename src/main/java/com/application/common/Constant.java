@@ -10,4 +10,12 @@ public class Constant {
 
     public final static long REFRESH_EXPIRED_TIME = 14*24*60*60L;
     public final static long BLACKLIST_EXPIRED_TIME = 15 * 60L;
+
+
+    public final static int LITTLE_ALCHOL_MIN = 0;
+    public final static int LITTLE_ALCHOL_MAX = 10;
+    public final static int MIDDLE_ALCHOL_MIN = 11;
+    public final static int MIDDLE_ALCHOL_MAX = 20;
+    public final static int STRONG_ALCHOL_MIN = 21;
+    public final static int STRONG_ALCHOL_MAX = 99;
 }

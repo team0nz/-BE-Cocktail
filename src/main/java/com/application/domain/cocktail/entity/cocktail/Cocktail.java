@@ -1,9 +1,10 @@
 package com.application.domain.cocktail.entity.cocktail;
 
 import jakarta.persistence.*;
-import org.hibernate.annotations.CollectionId;
+import lombok.Builder;
+import lombok.Getter;
 
-
+@Getter
 @Entity(name = "cocktail")
 public class Cocktail {
     @Id
@@ -19,4 +20,15 @@ public class Cocktail {
     private Integer maxAlchol;
     @Column(nullable = false)
     private Integer minAlchol;
+
+    @Builder
+    public Cocktail(String cocktailName, Integer cocktailSize,
+                    String introduce, Integer maxAlchol,
+                    Integer minAlchol){
+        this.cocktailName = cocktailName;
+        this.cocktailSize = cocktailSize;
+        this.introduce = introduce;
+        this.maxAlchol = maxAlchol;
+        this.minAlchol = minAlchol;
+    }
 }

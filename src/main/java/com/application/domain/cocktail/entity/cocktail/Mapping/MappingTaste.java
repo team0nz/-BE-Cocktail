@@ -4,7 +4,9 @@ import com.application.domain.cocktail.entity.cocktail.Cocktail;
 import com.application.domain.cocktail.entity.cocktail.TasteCategory;
 import com.application.domain.cocktail.entity.cocktail.TasteDetail;
 import jakarta.persistence.*;
+import lombok.Getter;
 
+@Getter
 @Entity(name="mapping_taste")
 public class MappingTaste {
     @Id

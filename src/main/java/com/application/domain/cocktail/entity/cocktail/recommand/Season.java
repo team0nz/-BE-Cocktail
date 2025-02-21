@@ -1,6 +1,7 @@
 package com.application.domain.cocktail.entity.cocktail.recommand;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 
 @Entity
 public class Season {
@@ -10,4 +11,9 @@ public class Season {
 
     @Column
     private String season;
+
+    @Builder
+    public Season(String season){
+        this.season = season;
+    }
 }

@@ -1,7 +1,9 @@
 package com.application.domain.cocktail.entity.cocktail.Mapping;
 
 import com.application.domain.cocktail.entity.cocktail.Cocktail;
-import com.application.domain.cocktail.entity.cocktail.Recommend;
+import com.application.domain.cocktail.entity.cocktail.recommand.Location;
+import com.application.domain.cocktail.entity.cocktail.recommand.Mood;
+import com.application.domain.cocktail.entity.cocktail.recommand.Season;
 import jakarta.persistence.*;
 
 @Entity(name="mapping_recommend")
@@ -15,6 +17,14 @@ public class MappingRecommend {
     private Cocktail cocktail;
 
     @ManyToOne
-    @JoinColumn(name="recommend_id", nullable = false)
-    private Recommend recommend;
+    @JoinColumn
+    private Location location;
+
+    @ManyToOne
+    @JoinColumn
+    private Mood mood;
+
+    @ManyToOne
+    @JoinColumn
+    private Season season;
 }
