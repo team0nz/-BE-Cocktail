@@ -1,12 +1,14 @@
 package com.application.domain.cocktail.entity.cocktail;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name="taste_category")
+@AllArgsConstructor
 public class TasteCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

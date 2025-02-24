@@ -77,7 +77,7 @@ public class CocktailService {
     // 칵테일 디테일 맛 전체조회
     public List<TasteDetail> getTasteDetail() {return tasteDetailRepository.findAll(); }
 
-    public MappingTaste getPersonalizeCocktail(ReqPersonalizeCocktail personalizeCocktail){
+    public HashMap<String, Object> getPersonalizeCocktail(ReqPersonalizeCocktail personalizeCocktail){
         
         //맛
         List<MappingTaste> mappingTastes = mappingTasteRepository.findPersonalizeCocktailAll(personalizeCocktail.getTasteCategoryId(), personalizeCocktail.getTasteDetailid());
@@ -114,7 +114,7 @@ public class CocktailService {
         rand.setSeed(System.currentTimeMillis());
         int randomIndex = rand.nextInt(filteredList.size());
 
-        return filteredList.get(randomIndex);
+        return getCocktailInfo(filteredList.get(randomIndex).getCocktail().getId());
     }
 
 

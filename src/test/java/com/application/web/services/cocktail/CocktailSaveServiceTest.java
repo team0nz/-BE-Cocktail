@@ -20,6 +20,7 @@ import com.application.domain.cocktail.repository.TasteDetailRepository;
 import com.application.domain.cocktail.repository.recommand.LocationRepository;
 import com.application.domain.cocktail.repository.recommand.MoodRepository;
 import com.application.domain.cocktail.repository.recommand.SeasonRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -105,12 +106,16 @@ class CocktailSaveServiceTest {
     //맛(대분류) 조회
     public void testGetTasteCategoryAll(){
         //given
+        TasteDetail tasteDetail = new TasteDetail("taste detail", null);
+        List<TasteDetail> tasteDetails = List.of(tasteDetail);
+        TasteCategory tasteCategory = new TasteCategory(1L,"tasteCategory",tasteDetails);
+        when(tasteCategoryRepository.findAll()).thenReturn(List.of(tasteCategory));
 
         //when
-
+        List<TasteCategory> results = cocktailSaveService.getTasteCategoryAll();
 
         //then
-//        return tasteCategoryRepository.findAll();
+        Assertions.assertEquals(results.get(0), tasteCategory);
     }
 
     @Test

@@ -1,9 +1,11 @@
 package com.application.domain.cocktail.entity.cocktail;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+@AllArgsConstructor
 @Getter
 @Entity(name = "cocktail")
 public class Cocktail {
