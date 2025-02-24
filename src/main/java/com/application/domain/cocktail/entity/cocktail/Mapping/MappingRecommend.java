@@ -5,6 +5,7 @@ import com.application.domain.cocktail.entity.cocktail.recommand.Location;
 import com.application.domain.cocktail.entity.cocktail.recommand.Mood;
 import com.application.domain.cocktail.entity.cocktail.recommand.Season;
 import jakarta.persistence.*;
+import lombok.Builder;
 
 @Entity(name="mapping_recommend")
 public class MappingRecommend {
@@ -27,4 +28,12 @@ public class MappingRecommend {
     @ManyToOne
     @JoinColumn
     private Season season;
+
+    @Builder
+    public MappingRecommend(Cocktail cocktail, Location location, Mood mood, Season season){
+        this.cocktail = cocktail;
+        this.location = location;
+        this.mood = mood;
+        this.season = season;
+    }
 }

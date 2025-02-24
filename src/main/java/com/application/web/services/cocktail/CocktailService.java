@@ -105,6 +105,8 @@ public class CocktailService {
                                 entry.getCocktail().getMaxAlchol() <= Constant.STRONG_ALCHOL_MAX)
                         .toList();
                 break;
+            default :
+                filteredList = mappingTastes;
         }
 
         //랜덤도출

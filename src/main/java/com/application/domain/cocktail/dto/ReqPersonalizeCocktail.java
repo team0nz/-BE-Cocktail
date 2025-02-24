@@ -8,5 +8,5 @@ import lombok.Setter;
 public class ReqPersonalizeCocktail {
     private Long tasteDetailid;
     private Long tasteCategoryId;
-    private Integer alcholType;
+    private Integer alcholType; // 1 : 가볍게 , 2: 중간 , 3 : 강하게
 }

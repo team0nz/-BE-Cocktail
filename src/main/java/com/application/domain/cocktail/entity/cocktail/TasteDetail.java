@@ -15,7 +15,8 @@ public class TasteDetail {
     private String tasteDetail;
 
     @Builder
-    public TasteDetail(String tasteDetail){
+    public TasteDetail(String tasteDetail, TasteCategory tasteCategory){
         this.tasteDetail = tasteDetail;
+        this.tasteCategory = tasteCategory;
     }
 }

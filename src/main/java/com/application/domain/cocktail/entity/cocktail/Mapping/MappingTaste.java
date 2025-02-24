@@ -4,6 +4,7 @@ import com.application.domain.cocktail.entity.cocktail.Cocktail;
 import com.application.domain.cocktail.entity.cocktail.TasteCategory;
 import com.application.domain.cocktail.entity.cocktail.TasteDetail;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -25,4 +26,10 @@ public class MappingTaste {
     @JoinColumn(name="cocktail_id", nullable = false)
     private Cocktail cocktail;
 
+    @Builder
+    public MappingTaste(TasteCategory tasteCategory, TasteDetail tasteDetail, Cocktail cocktail){
+        this.tasteCategory = tasteCategory;
+        this.tasteDetail = tasteDetail;
+        this.cocktail = cocktail;
+    }
 }
