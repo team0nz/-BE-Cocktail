@@ -75,7 +75,7 @@ public class CocktailService {
     }
     
     // 칵테일 디테일 맛 전체조회
-    public List<TasteDetail> getTasteDetail() {return tasteDetailRepository.findAll(); }
+    public List<TasteDetail> getTasteDetail(Long tasteCategoryId) {return tasteDetailRepository.findByTasteCategory(tasteCategoryId); }
 
     public HashMap<String, Object> getPersonalizeCocktail(ReqPersonalizeCocktail personalizeCocktail){
         

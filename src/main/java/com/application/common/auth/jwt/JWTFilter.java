@@ -32,7 +32,12 @@ public class JWTFilter extends OncePerRequestFilter {
         "/login/oauth2/code/google", "/login/oauth2/code/naver",
         "/api/auth/naver/token", "/api/auth/google/token",
         "/api/auth/naver/login-url", "/api/auth/google/login-url",
-        "/api/public/"
+        "/api/public/", "/admin/cocktail"
+    );
+
+    private final static List<String> EXCLUDE_PATH_PATTERNS = List.of(
+            "^/api/public/.*",
+            "^/admin/cocktail/.*"
     );
 
     @Override
@@ -74,7 +79,10 @@ public class JWTFilter extends OncePerRequestFilter {
     }
 
     private Boolean isExcludedPath(String uri){
-        return EXCLUDE_PATH.contains(uri);
+        if (EXCLUDE_PATH.contains(uri) || EXCLUDE_PATH_PATTERNS.stream().anyMatch(uri::matches)){
+            return true;
+        }
+        return false;
     }
 
     private void sendErrorResponse(HttpServletResponse response,int code,  int status, String message) throws IOException{

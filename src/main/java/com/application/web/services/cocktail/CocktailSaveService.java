@@ -66,6 +66,11 @@ public class CocktailSaveService {
         return maps;
     }
 
+    //only 칵테일정보
+    public List<Cocktail> getCocktailAll(){
+        return cocktailRepository.findAll();
+    }
+
     //맛(대분류) 조회
     public List<TasteCategory> getTasteCategoryAll(){
         return tasteCategoryRepository.findAll();
