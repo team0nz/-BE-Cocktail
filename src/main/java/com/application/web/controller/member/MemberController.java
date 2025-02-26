@@ -1,4 +1,4 @@
-package com.application.web.controiler.member;
+package com.application.web.controller.member;
 
 import com.application.common.Constant;
 import com.application.common.auth.dto.oauth2Dto.CustomOAuth2User;
