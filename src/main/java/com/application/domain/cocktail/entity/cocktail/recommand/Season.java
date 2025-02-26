@@ -2,7 +2,9 @@ package com.application.domain.cocktail.entity.cocktail.recommand;
 
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 @Entity
 public class Season {
     @Id
@@ -11,6 +13,8 @@ public class Season {
 
     @Column
     private String season;
+
+    public Season(){}
 
     @Builder
     public Season(String season){

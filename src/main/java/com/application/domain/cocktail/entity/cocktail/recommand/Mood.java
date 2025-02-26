@@ -2,7 +2,9 @@ package com.application.domain.cocktail.entity.cocktail.recommand;
 
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 @Entity
 public class Mood {
     @Id
@@ -11,6 +13,8 @@ public class Mood {
 
     @Column
     private String mood;
+
+    public Mood(){}
 
     @Builder
     public Mood(String mood){

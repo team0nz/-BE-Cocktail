@@ -1,8 +1,11 @@
 package com.application.domain.cocktail.entity.cocktail.recommand;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 
+@Getter
 @Entity
 public class Location {
     @Id
@@ -11,6 +14,8 @@ public class Location {
 
     @Column
     private String location;
+
+    public Location(){}
 
     @Builder
     public Location(String location){

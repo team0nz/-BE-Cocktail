@@ -5,7 +5,6 @@ import com.application.domain.cocktail.entity.cocktail.TasteDetail;
 import com.application.web.services.cocktail.CocktailSaveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Repository;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,14 +19,6 @@ import java.util.List;
 @RequestMapping("/admin/cocktail")
 public class CocktailSaveController {
     private final CocktailSaveService cocktailSaveService;
-
-    @GetMapping("/all")
-    public String getCocktailAll(Model model){
-        List<HashMap<String,Object>> maps = cocktailSaveService.getCocktailInfo();
-        model.addAttribute("result",maps);
-
-        return "cocktails";
-    }
 
     @GetMapping("/info")
     public String updatePage(Model model){
@@ -101,6 +92,36 @@ public class CocktailSaveController {
         return "redirect:/admin/cocktail/info";
     }
 
-    //맵핑하는 Controller 생성
+    @GetMapping("/mapping")
+    public String getCocktails(Model model){
+        model.addAttribute("cocktails", cocktailSaveService.getCocktailsInfo());
+        return "mapping";
+    }
 
+    @GetMapping("/mapping/update")
+    public String getMappingCocktail(Model model){
+        model.addAttribute("cocktails",cocktailSaveService.getCocktailsInfo());
+        return "updateMapping";
+    }
+
+    //맵핑하는 Controller 생성
+    @PostMapping("/mapping/update")
+    public String setMappingCocktail(@RequestParam(value="mappingIngredientId", required = false) Long mappingIngredientId,
+                                  @RequestParam Long cocktailId,
+                                  @RequestParam List<Long> ingredientIds,
+                                  @RequestParam Double quantity,
+                                  @RequestParam String unit,
+                                  @RequestParam Long tasteCategoryId,
+                                  @RequestParam List<Long> tasteDetailIds,
+                                  @RequestParam List<Long> moodIds,
+                                  @RequestParam List<Long> locationIds,
+                                  @RequestParam List<Long> seasonIds,
+                                  Model model
+                                  ){
+        cocktailSaveService.setCocktailAddIngredient(mappingIngredientId, cocktailId, ingredientIds, quantity, unit);
+        cocktailSaveService.setCocktailAddTaste(cocktailId, tasteCategoryId, tasteDetailIds);
+        cocktailSaveService.setCocktailAddRecommand(cocktailId,moodIds, locationIds, seasonIds);
+
+        return "redirect:/admin/cocktail/mapping";
+    }
 }

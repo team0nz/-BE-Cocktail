@@ -20,6 +20,8 @@ public class TasteCategory {
     @OneToMany(mappedBy = "tasteCategory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TasteDetail> details = new ArrayList<>();
 
+    public TasteCategory(){}
+
     @Builder
     public TasteCategory(String tasteCategory){
         this.tasteCategory = tasteCategory;

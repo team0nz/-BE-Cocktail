@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Cocktails Info</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .cocktail { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; }
+        h2 { margin-top: 0; }
+    </style>
+</head>
+<body>
+<h1>Cocktails Information</h1>
+<!-- cocktails는 List<HashMap<String,Object>> -->
+<div th:each="cocktailMap : ${cocktails}" class="cocktail">
+    <!-- cocktail 객체의 속성은 도메인 클래스에 맞게 수정 -->
+    <h2 th:text="${cocktailMap.cocktail.cocktailName}">Cocktail Name</h2>
+    <p>ID: <span th:text="${cocktailMap.cocktail.id}">1</span></p>
+    <p>Description: <span th:text="${cocktailMap.cocktail.information}">Description here</span></p>
+
+    <h3>Ingredients</h3>
+    <ul>
+        <li th:each="ingredient : ${cocktailMap.ingredient}"
+            th:text="${ingredient}">Ingredient</li>
+    </ul>
+
+    <h3>Tastes</h3>
+    <ul>
+        <li th:each="taste : ${cocktailMap.taste}"
+            th:text="${taste}">Taste</li>
+    </ul>
+
+    <h3>Recommendations</h3>
+    <ul>
+        <li th:each="recommend : ${cocktailMap.recommand}"
+            th:text="${recommend}">Recommendation</li>
+    </ul>
+</div>
+</body>
+</html>

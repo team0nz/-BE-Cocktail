@@ -23,6 +23,8 @@ public class Cocktail {
     @Column(nullable = false)
     private Integer minAlchol;
 
+    public Cocktail(){}
+
     @Builder
     public Cocktail(String cocktailName, Integer cocktailSize,
                     String introduce, Integer maxAlchol,

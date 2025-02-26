@@ -23,7 +23,6 @@ import com.application.domain.cocktail.repository.recommand.MoodRepository;
 import com.application.domain.cocktail.repository.recommand.SeasonRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.yaml.snakeyaml.events.MappingStartEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,7 +46,7 @@ public class CocktailSaveService {
     private final IngredientRepository ingredientRepository;
 
     //칵테일 정보 조회
-    public List<HashMap<String, Object>> getCocktailInfo(){
+    public List<HashMap<String, Object>> getCocktailsInfo(){
         List<HashMap<String, Object>> maps = new ArrayList<>();
         List<Cocktail> cocktails = cocktailRepository.findAll();
         for (Cocktail cocktail : cocktails) {
@@ -59,6 +58,7 @@ public class CocktailSaveService {
             map.put("cocktail", cocktail);
             map.put("taste", tastes);
             map.put("recommand", recommends);
+            map.put("ingredient", ingredients);
 
             maps.add(map);
         }
@@ -243,26 +243,26 @@ public class CocktailSaveService {
            }
      }
       */
-    public void setCocktailAddTaste(Long cocktailId, List<HashMap<String, Long>> maps){
+    public void setCocktailAddTaste(Long cocktailId, Long tasteCategoryId, List<Long> tasteDetailIds){
         Cocktail cocktail = cocktailRepository.findById(cocktailId)
                 .orElseThrow(() -> new CustomApiException("no exist cocktail"));
 
-        for (HashMap<String, Long> map : maps) {
-            Long categoryId = map.get("categoryId");
-            Long tasteDetailId = map.get("detailId");
-            TasteCategory tasteCategory = tasteCategoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new CustomApiException("no exist tasteCategory"));
+        TasteCategory tasteCategory = tasteCategoryRepository.findById(tasteCategoryId)
+                .orElseThrow(() -> new CustomApiException("no exist tasteCategory"));
+
+        for (Long tasteDetailId : tasteDetailIds) {
             TasteDetail tasteDetail = tasteDetailRepository.findById(tasteDetailId)
                     .orElseThrow(()-> new CustomApiException("no exist tasteDetail"));
 
-
             mappingTasteRepository.save(MappingTaste.builder()
-                            .tasteCategory(tasteCategory)
-                            .tasteDetail(tasteDetail)
-                            .cocktail(cocktail)
-                            .build());
+                    .tasteCategory(tasteCategory)
+                    .tasteDetail(tasteDetail)
+                    .cocktail(cocktail)
+                    .build());
         }
+
     }
+
     
     // 칵테일 + 분위기 맵핑
     public void setCocktailAddRecommand(Long cocktailId, List<Long> moodIds, List<Long> locationIds, List<Long> seasonIds){
