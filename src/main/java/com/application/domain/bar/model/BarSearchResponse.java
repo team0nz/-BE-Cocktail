@@ -1,13 +1,10 @@
 package com.application.domain.bar.model;
 
 import com.application.domain.menu.model.MenuResponse;
-import lombok.AllArgsConstructor;
 
 import java.util.List;
 
-@AllArgsConstructor
-public class BarSearchResponse {
+public record BarSearchResponse(BarResponse barResponse,
+                                List<MenuResponse> menuResponses) {
 
-    private BarResponse barResponse;
-    private List<MenuResponse> menuResponses;
 }

@@ -5,16 +5,12 @@ import com.application.domain.menu.entity.Menu;
 import com.application.domain.menu.model.MenuResponse;
 import com.application.domain.openHour.entity.OpenHour;
 import com.application.domain.openHour.model.OpenHourResponse;
-import lombok.AllArgsConstructor;
 
 import java.util.List;
 
-@AllArgsConstructor
-public class BarDetailResponse {
-
-    private BarResponse barResponse;
-    private List<MenuResponse> menuResponses;
-    private List<OpenHourResponse> hourResponses;
+public record BarDetailResponse(BarResponse barResponse,
+                                List<MenuResponse> menuResponses,
+                                List<OpenHourResponse> hourResponses) {
 
     public static BarDetailResponse from(Bar bar, List<Menu> menus, List<OpenHour> openHours) {
         BarResponse barResponse = BarResponse.from(bar);
