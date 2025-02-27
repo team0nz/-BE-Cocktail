@@ -7,7 +7,6 @@ import lombok.Builder;
 import lombok.Setter;
 
 @Entity(name = "mapping_ingredient")
-@Setter
 public class MappingIngredient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +31,13 @@ public class MappingIngredient {
                              Double quantity, String unit){
         this.cocktail = cocktail;
         this.ingredient =ingredient;
+        this.quantity = quantity;
+        this.unit = unit;
+    }
+
+    public void update(Cocktail cocktail,Ingredient ingredient, Double quantity, String unit){
+        this.cocktail = cocktail;
+        this.ingredient = ingredient;
         this.quantity = quantity;
         this.unit = unit;
     }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,17 @@ public class TasteCategory {
     public TasteCategory(){}
 
     @Builder
-    public TasteCategory(String tasteCategory){
+    public TasteCategory(Long id, String tasteCategory){
+        this.id = id;
         this.tasteCategory = tasteCategory;
+    }
+
+    public boolean isNew(){
+        return (this.id == null);
+    }
+
+    public void update(TasteCategory tasteCategory){
+        this.tasteCategory = tasteCategory.getTasteCategory();
+        this.details = tasteCategory.getDetails();
     }
 }

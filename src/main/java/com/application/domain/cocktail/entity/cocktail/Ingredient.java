@@ -14,8 +14,18 @@ public class Ingredient {
     private String material;
 
     public Ingredient(){}
+
     @Builder
-    public Ingredient(String material){
+    public Ingredient(Long id, String material){
+        this.id = id;
         this.material = material;
+    }
+
+    public boolean isNew(){
+        return (this.id == null);
+    }
+
+    public void update(Ingredient ingredient){
+        this.material = ingredient.getMaterial();
     }
 }

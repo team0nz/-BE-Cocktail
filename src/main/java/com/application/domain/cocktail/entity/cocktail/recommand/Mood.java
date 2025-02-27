@@ -17,7 +17,16 @@ public class Mood {
     public Mood(){}
 
     @Builder
-    public Mood(String mood){
+    public Mood(Long id, String mood){
+        this.id = id;
         this.mood = mood;
+    }
+
+    public boolean isNew(){
+        return (this.id == null);
+    }
+
+    public void update(Mood mood){
+        this.mood = mood.getMood();
     }
 }

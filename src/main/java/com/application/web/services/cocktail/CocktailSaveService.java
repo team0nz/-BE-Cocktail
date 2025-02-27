@@ -47,7 +47,8 @@ public class CocktailSaveService {
 
     private final IngredientRepository ingredientRepository;
 
-    //칵테일 정보 조회
+
+    // CHECKME) DTO 설정 및 리펙토링
     public List<HashMap<String, Object>> getCocktailsInfo(){
         List<HashMap<String, Object>> maps = new ArrayList<>();
         List<Cocktail> cocktails = cocktailRepository.findAll();
@@ -67,184 +68,161 @@ public class CocktailSaveService {
 
         return maps;
     }
-
-    //only 칵테일정보
     public List<Cocktail> getCocktailAll(){
         return cocktailRepository.findAll();
     }
-
-    //맛(대분류) 조회
     public List<TasteCategory> getTasteCategoryAll(){
         return tasteCategoryRepository.findAll();
     }
-    //맛(소분류) 조회
     public List<TasteDetail> getTasteDetailAll(Long tasteCategoryid){
         return tasteDetailRepository.findByTasteCategory(tasteCategoryid);
     }
-    
-    // 칵테일 추천장소 조회
     public List<Location> getLocationAll(){
         return locationRepository.findAll();
     }
-
-    // 칵테일 추천분위기 조회
     public List<Mood> getMoodAll(){
         return moodRepository.findAll();
     }
-    // 칵테일 추천계절 조회
     public List<Season> getSeasonAll(){
         return seasonRepository.findAll();
     }
-    
-    // 칵테일 재료 조회
     public List<Ingredient> getIngredientAll(){
         return ingredientRepository.findAll();
     }
 
 
 
-    //칵테일 정보 추가 및 수정
     @Transactional
     public void setCocktail(Long id, String cocktailName, Integer cocktailSize, String introduce,
                             Integer maxAlchol, Integer minAlchol){
-        Cocktail cocktail;
-        if (id == null){
-            cocktail = new Cocktail(cocktailName,cocktailSize,introduce,
-                    maxAlchol, minAlchol);
+        Cocktail newCocktail = new Cocktail(id, cocktailName,cocktailSize,introduce,maxAlchol, minAlchol);
+        if (newCocktail.isNew()){
+            cocktailRepository.save(newCocktail);
         }else{
-            cocktail = cocktailRepository.findById(id).orElseThrow(() -> new CustomApiException("no exist Cocktail"));
-            cocktail.setCocktailName(cocktailName);
-            cocktail.setCocktailSize(cocktailSize);
-            cocktail.setIntroduce(introduce);
-            cocktail.setMinAlchol(minAlchol);
-            cocktail.setMaxAlchol(maxAlchol);
+            Cocktail oldCocktail = cocktailRepository.findById(id).orElseThrow(() -> new CustomApiException("no exist Cocktail"));
+            oldCocktail.update(newCocktail);
+            cocktailRepository.save(oldCocktail);
         }
-        cocktailRepository.save(cocktail);
     }
 
-    //칵테일 맛(대분류) 추가 및 수정
     @Transactional
     public void setTasteCategory(Long id, String tasteCategoryValue){
-        TasteCategory tasteCategory;
-        if(id == null){
-            tasteCategory = new TasteCategory(tasteCategoryValue);
+        TasteCategory newTasteCategory = new TasteCategory(id, tasteCategoryValue);
+        if(newTasteCategory.isNew()){
+            tasteCategoryRepository.save(newTasteCategory);
         }else{
-            tasteCategory = tasteCategoryRepository.findById(id).orElseThrow(()-> new CustomApiException("no exist tasteCategory"));
+            TasteCategory oldTasteCategory = tasteCategoryRepository.findById(id).orElseThrow(()-> new CustomApiException("no exist tasteCategory"));
+            oldTasteCategory.update(newTasteCategory);
+            tasteCategoryRepository.save(oldTasteCategory);
         }
-        tasteCategoryRepository.save(tasteCategory);
     }
-    //칵테일 맛(소분류) 추가 및 수정
+
+
     @Transactional
     public void setTasteDetail(Long id, String tasteDetailValue, Long tasteCategoryId){
-        TasteDetail tasteDetail;
-        if (id == null){
-            TasteCategory findTasteCategory = tasteCategoryRepository.findById(tasteCategoryId).orElseThrow(() -> new CustomApiException("no exits category"));
-            tasteDetail = new TasteDetail(tasteDetailValue, findTasteCategory);
+        TasteCategory findTasteCategory = tasteCategoryRepository.findById(tasteCategoryId).orElseThrow(() -> new CustomApiException("no exits category"));
+        TasteDetail newTasteDetail = new TasteDetail(id, tasteDetailValue, findTasteCategory);
+        if (newTasteDetail.isNew()){
+            tasteDetailRepository.save(newTasteDetail);
         }else{
-            tasteDetail = tasteDetailRepository.findById(id).orElseThrow(() -> new CustomApiException("no exist tasteDetail"));
+            TasteDetail oldTasteDetail = tasteDetailRepository.findById(id).orElseThrow(() -> new CustomApiException("no exist tasteDetail"));
+            oldTasteDetail.update(newTasteDetail);
+            tasteDetailRepository.save(oldTasteDetail);
         }
-
-        tasteDetailRepository.save(tasteDetail);
     }
 
-    // 칵테일 추천장소 추가 및 수정
     @Transactional
     public void setLocation(Long id, String location){
-        Location getLocation;
-        if(id == null){
-            getLocation = new Location(location);
+        Location newLocation = new Location(id, location);
+        if(newLocation.isNew()){
+            locationRepository.save(newLocation);
         }else{
-            getLocation = locationRepository.findById(id).orElseThrow(() -> new CustomApiException("no exist location"));
+            Location oldLocation = locationRepository.findById(id).orElseThrow(() -> new CustomApiException("no exist location"));
+            oldLocation.update(newLocation);
+            locationRepository.save(oldLocation);
         }
-        locationRepository.save(getLocation);
     }
 
-    // 칵테일 추천분위기 추가 및 수정
     @Transactional
     public void setMood(Long id, String mood){
-        Mood getMood;
-        if(id == null){
-            getMood = new Mood(mood);
+        Mood newMood = new Mood(id, mood);
+        if(newMood.isNew()){
+            moodRepository.save(newMood);
         }else{
-            getMood = moodRepository.findById(id).orElseThrow(()->new CustomApiException("no exist mood"));
+            Mood oldMood = moodRepository.findById(id).orElseThrow(()->new CustomApiException("no exist mood"));
+            oldMood.update(newMood);
+            moodRepository.save(oldMood);
         }
-        moodRepository.save(getMood);
     }
-    // 칵테일 추천계절 추가 및 수정
+
     @Transactional
     public void setSeason(Long id, String season){
-        Season getSeason;
-        if(id == null){
-            getSeason = new Season(season);
+        Season newSeason = new Season(id, season);
+        if(newSeason.isNew()){
+            seasonRepository.save(newSeason);
         }else{
-            getSeason = seasonRepository.findById(id).orElseThrow(()->new CustomApiException("no exist season"));
+            Season oldSeason = seasonRepository.findById(id).orElseThrow(()->new CustomApiException("no exist season"));
+            oldSeason.update(newSeason);
+            seasonRepository.save(oldSeason);
         }
-
-        seasonRepository.save(getSeason);
     }
 
 
-    // 칵테일 재료 추가 및 수정
     @Transactional
     public void setIngredient(Long id, String material){
-        Ingredient getIngredient;
-        if(id == null){
-           getIngredient = new Ingredient(material);
+        Ingredient newIngredient = new Ingredient(id, material);
+        if(newIngredient.isNew()){
+            ingredientRepository.save(newIngredient);
         }else{
-            getIngredient = ingredientRepository.findById(id).orElseThrow(()->new CustomApiException("no exist ingredient"));
+            Ingredient oldIngredient = ingredientRepository.findById(id).orElseThrow(()->new CustomApiException("no exist ingredient"));
+            oldIngredient.update(newIngredient);
+            ingredientRepository.save(oldIngredient);
         }
-        ingredientRepository.save(getIngredient);
     }
 
 
-
-
-    // 칵테일 + 재료 맵핑
     @Transactional
     public void setCocktailAddIngredient(Long mappingIngredientId, Long cocktailid, List<Long> ingredientIds,
                                          Double quantity, String unit) {
 
-        MappingIngredient mapping;
-
         Cocktail cocktail = cocktailRepository.findById(cocktailid)
                 .orElseThrow(() -> new CustomApiException("no exist cocktail"));
+        List<Ingredient> ingredients = ingredientRepository.findAll();
 
-        //CHECKME) ingredient 여러개
-        if (mappingIngredientId == null) {
-            for (Long ingredientId : ingredientIds) {
-                Ingredient ingredient = ingredientRepository.findById(ingredientId)
-                        .orElseThrow(() -> new CustomApiException("no exist ingredient"));
-
-                //ingredient
-                mapping = MappingIngredient.builder()
-                        .ingredient(ingredient)
-                        .cocktail(cocktail)
-                        .quantity(quantity)
-                        .unit(unit)
-                        .build();
-
-                mappingIngredientRepository.save(mapping);
+        for (Ingredient ingredient : ingredients) {
+            if(mappingIngredientId == null){
+                MappingIngredient mappingIngredient = saveMappingIngredient(cocktail, ingredient,quantity, unit );
+                mappingIngredientRepository.save(mappingIngredient);
+            }else{
+                MappingIngredient mappingIngredient = updateMappingIngredient(mappingIngredientId, cocktail, ingredient, quantity, unit);
+                mappingIngredientRepository.save(mappingIngredient);
             }
-        } else {
-            for (Long ingredientId : ingredientIds) {
-                Ingredient ingredient = ingredientRepository.findById(ingredientId)
-                        .orElseThrow(() -> new CustomApiException("no exist ingredient"));
-
-                //ingredient
-                mapping = mappingIngredientRepository.findById(mappingIngredientId)
-                        .orElseThrow(() -> new CustomApiException("no exist mapping "));
-
-                mapping.setCocktail(cocktail);
-                mapping.setIngredient(ingredient);
-                mapping.setUnit(unit);
-                mapping.setQuantity(quantity);
-                mappingIngredientRepository.save(mapping);
-            }
-
         }
     }
+
+    private MappingIngredient saveMappingIngredient(Cocktail cocktail, Ingredient ingredient,
+                                       Double quantity, String unit){
+        return MappingIngredient.builder()
+                .ingredient(ingredient)
+                .cocktail(cocktail)
+                .quantity(quantity)
+                .unit(unit)
+                .build();
+
+    }
+
+    private MappingIngredient updateMappingIngredient(Long id, Cocktail cocktail, Ingredient ingredient,
+                                         Double quantity, String unit){
+        MappingIngredient mapping = mappingIngredientRepository.findById(id)
+                .orElseThrow(() -> new CustomApiException("no exist mapping "));
+
+        mapping.update(cocktail, ingredient, quantity, unit);
+        return mapping;
+    }
+
     
     // 칵테일 + 맛 맵핑
+    //CHECKME) 리펙토링
     @Transactional
     public void setCocktailAddTaste(Long cocktailId, Long tasteCategoryId, List<Long> tasteDetailIds){
         Cocktail cocktail = cocktailRepository.findById(cocktailId)
@@ -268,6 +246,7 @@ public class CocktailSaveService {
 
     
     // 칵테일 + 분위기 맵핑
+    //CHECKME) 리펙토링
     @Transactional
     public void setCocktailAddRecommand(Long cocktailId, List<Long> moodIds, List<Long> locationIds, List<Long> seasonIds){
         Cocktail cocktail = cocktailRepository.findById(cocktailId).orElseThrow(() -> new CustomApiException("no exist cocktail"));

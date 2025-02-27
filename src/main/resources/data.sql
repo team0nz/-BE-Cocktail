@@ -45,6 +45,12 @@ INSERT INTO ingredient (id, material) VALUES (22, '오렌지 필 (ORANGE PEEL)')
 INSERT INTO ingredient (id, material) VALUES (23, '오렌지 슬라이스 (ORANGE SLICE)');
 INSERT INTO ingredient (id, material) VALUES (24, '파인애플 슬라이스 (PINEAPPLE SLICE)');
 
+INSERT INTO location (id, location) VALUES (1, "고급스러운 자리");
+
+
+INSERT INTO mood (id, mood) VALUES (1, "클래식한 분위기");
+
+
 
 INSERT INTO cocktail (id, cocktailName, cocktailSize, introduce, maxAlchol, minAlchol) VALUES (1, "마티니", 120, "단순하지만 완벽한 클래식 칵테일", 32, 30);
 INSERT INTO cocktail (id, cocktailName, cocktailSize, introduce, maxAlchol, minAlchol) VALUES (2, "맨해튼", 90, "깊고 부드러운 위스키와 스위트 베르무트의 조화", 33, 30);
@@ -53,7 +59,16 @@ INSERT INTO cocktail (id, cocktailName, cocktailSize, introduce, maxAlchol, minA
 INSERT INTO cocktail (id, cocktailName, cocktailSize, introduce, maxAlchol, minAlchol) VALUES (5, "모히토", 250, "상쾌한 민트와 라임이 만드는 청량한 한 잔", 13, 10);
 INSERT INTO cocktail (id, cocktailName, cocktailSize, introduce, maxAlchol, minAlchol) VALUES (6, "아페롤 스프리츠", 250, "가벼운 달콤 쌉싸름한 맛과 스파클리의 조화", 12, 10);
 INSERT INTO cocktail (id, cocktailName, cocktailSize, introduce, maxAlchol, minAlchol) VALUES (7, "다이키리", 120, "럼과 라임의 깔끔한 조화, 쿠바 스타일 칵테일", 20, 18);
-INSERT INTO cocktail (id, cocktailName, cocktailSize, introduce, maxAlchol, minAlchol) VALUES (7, "피나콜라다", 300, "코코넛과 파인애플이 어우러진 달콤한 휴양지 칵테일", 15, 13);
+INSERT INTO cocktail (id, cocktailName, cocktailSize, introduce, maxAlchol, minAlchol) VALUES (8, "피나콜라다", 300, "코코넛과 파인애플이 어우러진 달콤한 휴양지 칵테일", 15, 13);
 
 
 
+INSERT INTO mapping_ingredient (id, ingredient_id, cocktail_id, quantity, unit) VALUES  (1, 1, 1, 60, "ml")
+INSERT INTO mapping_ingredient (id, ingredient_id, cocktail_id, quantity, unit) VALUES  (2, 2, 1, 10, "ml")
+INSERT INTO mapping_ingredient (id, ingredient_id, cocktail_id, quantity, unit) VALUES  (3, 3, 1, 1, "ea")
+INSERT INTO mapping_ingredient (id, ingredient_id, cocktail_id, quantity, unit) VALUES  (4, 4, 1, 1, "ea")
+
+
+INSERT INTO mapping_recommend (id, cocktail_id, location_id, mood_id) VALUES (1, 1, 1);
+
+INSERT INTO mapping_taste (id, taste_category_id, taste_detail_id, cocktail_id) VALUES (1, 4, 8, 1);

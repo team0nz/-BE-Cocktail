@@ -17,7 +17,16 @@ public class Season {
     public Season(){}
 
     @Builder
-    public Season(String season){
+    public Season(Long id, String season){
+        this.id = id;
         this.season = season;
+    }
+
+    public boolean isNew(){
+        return (this.id == null);
+    }
+
+    public void update(Season season){
+        this.season = season.getSeason();
     }
 }

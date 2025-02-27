@@ -62,9 +62,9 @@ public class CocktailService {
 
 
         map.put("cocktail", cocktail);
-        map.put("taste", tastes);
-        map.put("ingredient", ingredients);
-        map.put("recommand", recommends);
+        map.put("tastes", tastes);
+        map.put("ingredients", ingredients);
+        map.put("recommands", recommends);
 
         return map;
     }

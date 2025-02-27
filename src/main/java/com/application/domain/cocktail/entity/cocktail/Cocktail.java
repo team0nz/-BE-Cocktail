@@ -8,7 +8,6 @@ import lombok.Setter;
 
 @AllArgsConstructor
 @Getter
-@Setter
 @Entity(name = "cocktail")
 public class Cocktail {
     @Id
@@ -28,13 +27,26 @@ public class Cocktail {
     public Cocktail(){}
 
     @Builder
-    public Cocktail(String cocktailName, Integer cocktailSize,
+    public Cocktail(Long id, String cocktailName, Integer cocktailSize,
                     String introduce, Integer maxAlchol,
                     Integer minAlchol){
+        this.id = id;
         this.cocktailName = cocktailName;
         this.cocktailSize = cocktailSize;
         this.introduce = introduce;
         this.maxAlchol = maxAlchol;
         this.minAlchol = minAlchol;
+    }
+
+    public boolean isNew(){
+        return (this.id == null);
+    }
+
+    public void update(Cocktail cocktail){
+        this.cocktailName = cocktail.getCocktailName();
+        this.cocktailSize = cocktail.getCocktailSize();
+        this.introduce = cocktail.getIntroduce();
+        this.maxAlchol = cocktail.getMaxAlchol();
+        this.minAlchol = cocktail.getMinAlchol();
     }
 }

@@ -20,8 +20,18 @@ public class TasteDetail {
     public TasteDetail(){}
 
     @Builder
-    public TasteDetail(String tasteDetail, TasteCategory tasteCategory){
+    public TasteDetail(Long id, String tasteDetail, TasteCategory tasteCategory){
+        this.id = id;
         this.tasteDetail = tasteDetail;
         this.tasteCategory = tasteCategory;
+    }
+
+    public boolean isNew(){
+        return (this.id == null);
+    }
+
+    public void update(TasteDetail tasteDetail){
+        this.tasteDetail = tasteDetail.getTasteDetail();
+        this.tasteCategory = tasteDetail.getTasteCategory();
     }
 }

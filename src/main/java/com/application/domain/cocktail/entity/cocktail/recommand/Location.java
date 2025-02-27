@@ -18,7 +18,16 @@ public class Location {
     public Location(){}
 
     @Builder
-    public Location(String location){
+    public Location(Long id, String location){
+        this.id = id;
         this.location = location;
+    }
+
+    public boolean isNew(){
+        return (this.id == null);
+    }
+
+    public void update(Location location){
+        this.location = location.getLocation();
     }
 }

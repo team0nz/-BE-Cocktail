@@ -13,9 +13,9 @@ public class Constant {
 
 
     public final static int LITTLE_ALCHOL_MIN = 0;
-    public final static int LITTLE_ALCHOL_MAX = 10;
-    public final static int MIDDLE_ALCHOL_MIN = 11;
-    public final static int MIDDLE_ALCHOL_MAX = 20;
-    public final static int STRONG_ALCHOL_MIN = 21;
+    public final static int LITTLE_ALCHOL_MAX = 15;
+    public final static int MIDDLE_ALCHOL_MIN = 16;
+    public final static int MIDDLE_ALCHOL_MAX = 25;
+    public final static int STRONG_ALCHOL_MIN = 26;
     public final static int STRONG_ALCHOL_MAX = 99;
 }
