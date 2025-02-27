@@ -10,10 +10,10 @@ import com.application.domain.openHour.model.OpenHourResponse;
 
 import java.util.List;
 
-public record BarDetailResponse(BarResponse barResponse,
-                                List<MenuResponse> menuResponses,
-                                List<OpenHourResponse> hourResponses,
-                                List<BarImageResponse> barImageResponses) {
+public record BarDetailResponse(BarResponse bar,
+                                List<MenuResponse> menus,
+                                List<OpenHourResponse> hours,
+                                List<BarImageResponse> barImages) {
 
     public static BarDetailResponse from(Bar bar, List<Menu> menus, List<OpenHour> openHours, List<BarImage> barImages) {
         BarResponse barResponse = BarResponse.from(bar);
