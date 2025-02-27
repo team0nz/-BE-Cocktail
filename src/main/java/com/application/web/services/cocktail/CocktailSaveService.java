@@ -21,8 +21,10 @@ import com.application.domain.cocktail.repository.TasteDetailRepository;
 import com.application.domain.cocktail.repository.recommand.LocationRepository;
 import com.application.domain.cocktail.repository.recommand.MoodRepository;
 import com.application.domain.cocktail.repository.recommand.SeasonRepository;
+import jakarta.transaction.TransactionScoped;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -102,6 +104,7 @@ public class CocktailSaveService {
 
 
     //칵테일 정보 추가 및 수정
+    @Transactional
     public void setCocktail(Long id, String cocktailName, Integer cocktailSize, String introduce,
                             Integer maxAlchol, Integer minAlchol){
         Cocktail cocktail;
@@ -110,11 +113,17 @@ public class CocktailSaveService {
                     maxAlchol, minAlchol);
         }else{
             cocktail = cocktailRepository.findById(id).orElseThrow(() -> new CustomApiException("no exist Cocktail"));
+            cocktail.setCocktailName(cocktailName);
+            cocktail.setCocktailSize(cocktailSize);
+            cocktail.setIntroduce(introduce);
+            cocktail.setMinAlchol(minAlchol);
+            cocktail.setMaxAlchol(maxAlchol);
         }
         cocktailRepository.save(cocktail);
     }
 
     //칵테일 맛(대분류) 추가 및 수정
+    @Transactional
     public void setTasteCategory(Long id, String tasteCategoryValue){
         TasteCategory tasteCategory;
         if(id == null){
@@ -125,6 +134,7 @@ public class CocktailSaveService {
         tasteCategoryRepository.save(tasteCategory);
     }
     //칵테일 맛(소분류) 추가 및 수정
+    @Transactional
     public void setTasteDetail(Long id, String tasteDetailValue, Long tasteCategoryId){
         TasteDetail tasteDetail;
         if (id == null){
@@ -138,6 +148,7 @@ public class CocktailSaveService {
     }
 
     // 칵테일 추천장소 추가 및 수정
+    @Transactional
     public void setLocation(Long id, String location){
         Location getLocation;
         if(id == null){
@@ -149,6 +160,7 @@ public class CocktailSaveService {
     }
 
     // 칵테일 추천분위기 추가 및 수정
+    @Transactional
     public void setMood(Long id, String mood){
         Mood getMood;
         if(id == null){
@@ -159,6 +171,7 @@ public class CocktailSaveService {
         moodRepository.save(getMood);
     }
     // 칵테일 추천계절 추가 및 수정
+    @Transactional
     public void setSeason(Long id, String season){
         Season getSeason;
         if(id == null){
@@ -172,6 +185,7 @@ public class CocktailSaveService {
 
 
     // 칵테일 재료 추가 및 수정
+    @Transactional
     public void setIngredient(Long id, String material){
         Ingredient getIngredient;
         if(id == null){
@@ -186,6 +200,7 @@ public class CocktailSaveService {
 
 
     // 칵테일 + 재료 맵핑
+    @Transactional
     public void setCocktailAddIngredient(Long mappingIngredientId, Long cocktailid, List<Long> ingredientIds,
                                          Double quantity, String unit) {
 
@@ -230,19 +245,7 @@ public class CocktailSaveService {
     }
     
     // 칵테일 + 맛 맵핑
-    //
-     /*
-     {
-           {
-                categoryId : 1
-                detailid : 1
-           },
-           {
-                categoryId : 1
-                detailid : 2
-           }
-     }
-      */
+    @Transactional
     public void setCocktailAddTaste(Long cocktailId, Long tasteCategoryId, List<Long> tasteDetailIds){
         Cocktail cocktail = cocktailRepository.findById(cocktailId)
                 .orElseThrow(() -> new CustomApiException("no exist cocktail"));
@@ -265,6 +268,7 @@ public class CocktailSaveService {
 
     
     // 칵테일 + 분위기 맵핑
+    @Transactional
     public void setCocktailAddRecommand(Long cocktailId, List<Long> moodIds, List<Long> locationIds, List<Long> seasonIds){
         Cocktail cocktail = cocktailRepository.findById(cocktailId).orElseThrow(() -> new CustomApiException("no exist cocktail"));
 

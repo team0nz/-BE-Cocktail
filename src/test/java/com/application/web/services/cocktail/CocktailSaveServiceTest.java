@@ -84,7 +84,7 @@ class CocktailSaveServiceTest {
         when(mappingRecommendRepository.findByCocktail(cocktail)).thenReturn(recommendList);
 
         //when
-        List<HashMap<String, Object>> result = cocktailSaveService.getCocktailInfo();
+        List<HashMap<String, Object>> result = cocktailSaveService.getCocktailsInfo();
 
         //then
         assertNotNull(result, "Result should not be null");

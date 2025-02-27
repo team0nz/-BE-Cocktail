@@ -15,7 +15,7 @@ public class TasteCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
+    @Column(unique = true)
     private String tasteCategory;
     @OneToMany(mappedBy = "tasteCategory", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TasteDetail> details = new ArrayList<>();

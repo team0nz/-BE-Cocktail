@@ -14,7 +14,7 @@ public class TasteDetail {
     @ManyToOne
     @JoinColumn
     private TasteCategory tasteCategory;
-    @Column(name="taste_detail")
+    @Column(name="taste_detail", unique = true)
     private String tasteDetail;
 
     public TasteDetail(){}
