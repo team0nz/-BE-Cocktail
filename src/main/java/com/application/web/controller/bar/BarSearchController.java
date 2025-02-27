@@ -5,6 +5,8 @@ import com.application.common.response.ResponseDto;
 import com.application.web.services.bar.BarsSearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,25 +33,12 @@ public class BarSearchController {
     }
 
     @GetMapping("/by-name")
-    public ResponseEntity<?> getBarsByBarName(@RequestParam(name = "bar-name") String barName,
-                                              Pageable pageable) {
+    public ResponseEntity<?> getBarsByBarName(@RequestParam(name = "keyword") String keyword, Pageable pageable) {
 
         return new ResponseEntity<>(new ResponseDto<>(
                 Constant.SUCCESS_CODE,
-                "search by bar name",
-                barsSearchService.getBarsByBarName(barName, pageable)),
-                HttpStatus.OK
-        );
-    }
-
-    @GetMapping("/by-menu")
-    public ResponseEntity<?> getBarsByMenuName(@RequestParam(name = "menu-name") String menuName,
-                                               Pageable pageable) {
-
-        return new ResponseEntity<>(new ResponseDto<>(
-                Constant.SUCCESS_CODE,
-                "search by menu name",
-                barsSearchService.getBarsByBarMenu(menuName, pageable)),
+                "search by bar name or menu name",
+                barsSearchService.getBarsByBarNameOrMenuName(keyword, pageable)),
                 HttpStatus.OK
         );
     }

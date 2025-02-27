@@ -2,9 +2,9 @@ package com.application.web.services.bar;
 
 import com.application.common.exception.custom.EntityNotFoundException;
 import com.application.domain.bar.entity.Bar;
-import com.application.domain.bar.model.BarDetailResponse;
-import com.application.domain.bar.model.BarResponse;
-import com.application.domain.bar.model.BarSearchResponse;
+import com.application.domain.bar.model.response.BarDetailResponse;
+import com.application.domain.bar.model.response.BarResponse;
+import com.application.domain.bar.model.response.BarSearchResponse;
 import com.application.domain.bar.repository.BarRepository;
 import com.application.domain.bar.repository.BarSearchRepository;
 import com.application.domain.menu.entity.Menu;
@@ -41,12 +41,8 @@ public class BarsSearchService {
                 openHours.stream().map(OpenHourResponse::from).toList());
     }
 
-    public List<BarSearchResponse> getBarsByBarName(String barName, Pageable pageable) {
-        return getBarSearchResponses(searchBarsByBarName(barName, pageable));
-    }
-
-    public List<BarSearchResponse> getBarsByBarMenu(String barMenu, Pageable pageable) {
-        return getBarSearchResponses(searchBarsByBarMenu(barMenu, pageable));
+    public List<BarSearchResponse> getBarsByBarNameOrMenuName(String keyword, Pageable pageable) {
+        return getBarSearchResponses(searchBarsByBarNameOrMenuName(keyword, pageable));
     }
 
     public List<BarSearchResponse> getBarsByCurrentCoordinates(double currentX, double currentY, Pageable pageable) {
@@ -67,12 +63,8 @@ public class BarsSearchService {
         return searchResponses;
     }
 
-    private Page<Bar> searchBarsByBarName(String barName, Pageable pageable) {
-        return barSearchRepository.findBarsByName(barName, pageable);
-    }
-
-    private Page<Bar> searchBarsByBarMenu(String menuName, Pageable pageable) {
-        return barSearchRepository.findBarsByMenu(menuName, pageable);
+    private Page<Bar> searchBarsByBarNameOrMenuName(String keyword, Pageable pageable) {
+        return barSearchRepository.findBarsByNameOrMenuName(keyword, pageable);
     }
 
     private Page<Bar> searchBarsByCurrentCoordinates(double currentX, double currentY, Pageable pageable) {

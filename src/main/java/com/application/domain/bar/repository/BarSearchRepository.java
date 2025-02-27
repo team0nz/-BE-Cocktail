@@ -6,8 +6,7 @@ import org.springframework.data.domain.Pageable;
 
 public interface BarSearchRepository {
 
-    Page<Bar> findBarsByName(String barName, Pageable pageable);
-    Page<Bar> findBarsByMenu(String menuName, Pageable pageable);
+    Page<Bar> findBarsByNameOrMenuName(String keyword, Pageable pageable);
     Page<Bar> findByCurrentCoordinates(double currentX, double currentY, double radius, Pageable pageable);
 
 }

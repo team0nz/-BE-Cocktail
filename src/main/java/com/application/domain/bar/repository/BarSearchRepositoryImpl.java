@@ -25,30 +25,15 @@ public class BarSearchRepositoryImpl implements BarSearchRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<Bar> findBarsByName(String barName, Pageable pageable) {
-        List<Bar> bars = queryFactory
-                .selectFrom(bar)
-                .where(barNameContains(barName))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+    public Page<Bar> findBarsByNameOrMenuName(String keyword, Pageable pageable) {
+        BooleanExpression barCondition = barNameContains(keyword);
+        BooleanExpression menuCondition = menuNameContains(keyword);
 
-        JPAQuery<Long> countQuery = queryFactory
-                .select(bar.count())
-                .from(bar)
-                .where(barNameContains(barName));
-
-        return PageableExecutionUtils.getPage(bars, pageable,
-                () -> Optional.ofNullable(countQuery.fetchOne()).orElse(0L));
-    }
-
-    @Override
-    public Page<Bar> findBarsByMenu(String menuName, Pageable pageable) {
         List<Bar> bars = queryFactory
                 .selectDistinct(bar)
                 .from(bar)
-                .join(menu).on(menu.bar.eq(bar))
-                .where(menuNameContains(menuName))
+                .leftJoin(menu).on(menu.bar.eq(bar))
+                .where(barCondition.or(menuCondition))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -56,8 +41,8 @@ public class BarSearchRepositoryImpl implements BarSearchRepository {
         JPAQuery<Long> countQuery = queryFactory
                 .select(bar.id.countDistinct())
                 .from(bar)
-                .join(menu).on(menu.bar.eq(bar))
-                .where(menuNameContains(menuName));
+                .leftJoin(menu).on(menu.bar.eq(bar))
+                .where(barCondition.or(menuCondition));
 
         return PageableExecutionUtils.getPage(bars, pageable,
                 () -> Optional.ofNullable(countQuery.fetchOne()).orElse(0L));
