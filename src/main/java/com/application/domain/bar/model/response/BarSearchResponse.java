@@ -1,4 +1,4 @@
-package com.application.domain.bar.model;
+package com.application.domain.bar.model.response;
 
 import com.application.domain.menu.model.MenuResponse;
 
