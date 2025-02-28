@@ -1,7 +1,7 @@
 package com.application.web.controiler.cocktail;
 
 import com.application.common.response.ResponseDto;
-import com.application.domain.cocktail.dto.ReqPersonalizeCocktail;
+import com.application.domain.cocktail.dto.ReqPersonalizeCocktailDto;
 import com.application.web.services.cocktail.CocktailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -34,8 +34,8 @@ public class CocktailController {
     }
 
     @GetMapping("/cocktail/personalize")
-    public ResponseEntity<?> getPersonalize(@RequestBody ReqPersonalizeCocktail reqPersonalizeCocktail){
-        return new ResponseEntity<>(new ResponseDto<>(1, "personalize cocktail", cocktailService.getPersonalizeCocktail(reqPersonalizeCocktail)),HttpStatus.OK);
+    public ResponseEntity<?> getPersonalize(@RequestBody ReqPersonalizeCocktailDto reqPersonalizeCocktailDto){
+        return new ResponseEntity<>(new ResponseDto<>(1, "personalize cocktail", cocktailService.getPersonalizeCocktail(reqPersonalizeCocktailDto)),HttpStatus.OK);
     }
 
 }

@@ -32,4 +32,10 @@ public class MappingTaste {
         this.tasteDetail = tasteDetail;
         this.cocktail = cocktail;
     }
+
+    public void update(Cocktail cocktail, TasteCategory tasteCategory,  TasteDetail tasteDetail){
+        this.cocktail = cocktail;
+        this.tasteCategory = tasteCategory;
+        this.tasteDetail = tasteDetail;
+    }
 }

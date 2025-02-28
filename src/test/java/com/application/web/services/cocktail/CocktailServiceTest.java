@@ -1,5 +1,6 @@
 package com.application.web.services.cocktail;
 
+import com.application.domain.cocktail.dto.CocktailInfoDto;
 import com.application.domain.cocktail.entity.cocktail.Cocktail;
 import com.application.domain.cocktail.entity.cocktail.Mapping.MappingIngredient;
 import com.application.domain.cocktail.entity.cocktail.Mapping.MappingRecommend;
@@ -56,10 +57,10 @@ class CocktailServiceTest {
 
 
         //when
-        List<HashMap<String,Object>> result = cocktailService.getCocktailFindAll();
+        List<CocktailInfoDto> result = cocktailService.getCocktailFindAll();
 
         //then
-        Assertions.assertEquals(result.get(0).get("cocktail"), cocktail);
+        Assertions.assertEquals(result.get(0).getCocktail(), cocktail);
 
 
     }

@@ -26,6 +26,7 @@ public class MappingIngredient {
     @Column
     private String unit;
 
+
     @Builder
     public MappingIngredient(Ingredient ingredient, Cocktail cocktail,
                              Double quantity, String unit){

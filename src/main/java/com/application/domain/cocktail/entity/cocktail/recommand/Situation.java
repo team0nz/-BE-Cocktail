@@ -1,33 +1,32 @@
 package com.application.domain.cocktail.entity.cocktail.recommand;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Entity
-public class Location {
+public class Situation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true)
-    private String location;
+    private String situation;
 
-    public Location(){}
+    public Situation(){}
 
     @Builder
-    public Location(Long id, String location){
+    public Situation(Long id, String situation){
         this.id = id;
-        this.location = location;
+        this.situation = situation;
     }
 
     public boolean isNew(){
         return (this.id == null);
     }
 
-    public void update(Location location){
-        this.location = location.getLocation();
+    public void update(Situation situation){
+        this.situation = situation.getSituation();
     }
 }

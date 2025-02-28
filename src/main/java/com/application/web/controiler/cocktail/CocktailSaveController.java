@@ -30,7 +30,7 @@ public class CocktailSaveController {
 
         model.addAttribute("taste", map);
 
-        model.addAttribute("locations", cocktailSaveService.getLocationAll());
+        model.addAttribute("situations", cocktailSaveService.getSituationAll());
         model.addAttribute("moods", cocktailSaveService.getMoodAll());
         model.addAttribute("seasons", cocktailSaveService.getSeasonAll());
         model.addAttribute("ingredients", cocktailSaveService.getIngredientAll());
@@ -42,7 +42,6 @@ public class CocktailSaveController {
     @PostMapping("/taste/category/update")
     public String updateTasteCategory(@RequestParam(value = "id", required = false) Long id, @RequestParam("tasteCategoryValue") String tasteCategoryValue, Model model){
         cocktailSaveService.setTasteCategory(id, tasteCategoryValue);
-
         return "redirect:/admin/cocktail/info";
     }
 
@@ -53,10 +52,10 @@ public class CocktailSaveController {
         return "redirect:/admin/cocktail/info";
     }
 
-    @PostMapping("/location/update")
-    public String updateLocation(@RequestParam(value = "id", required = false) Long id,
-                                 @RequestParam("location") String location) {
-        cocktailSaveService.setLocation(id, location);
+    @PostMapping("/situation/update")
+    public String updateSituation(@RequestParam(value = "id", required = false) Long id,
+                                 @RequestParam("situation") String situation) {
+        cocktailSaveService.setSituation(id, situation);
         return "redirect:/admin/cocktail/info";
     }
 
@@ -92,21 +91,30 @@ public class CocktailSaveController {
         return "redirect:/admin/cocktail/info";
     }
 
+
     @GetMapping("/mapping")
     public String getCocktails(Model model){
-        model.addAttribute("cocktails", cocktailSaveService.getCocktailsInfo());
+        model.addAttribute("mappingCocktails", cocktailSaveService.getCocktailsInfo());
         return "mapping";
     }
 
     @GetMapping("/mapping/update")
     public String getMappingCocktail(Model model){
         model.addAttribute("cocktails",cocktailSaveService.getCocktailsInfo());
+
+        model.addAttribute("situationInfos", cocktailSaveService.getSituationAll());
+        model.addAttribute("moodInfos", cocktailSaveService.getMoodAll());
+        model.addAttribute("seasonInfos", cocktailSaveService.getSeasonAll());
+        model.addAttribute("ingredientInfos", cocktailSaveService.getIngredientAll());
+        model.addAttribute("cocktailInfos", cocktailSaveService.getCocktailAll());
         return "updateMapping";
     }
 
     //맵핑하는 Controller 생성
     @PostMapping("/mapping/update")
     public String setMappingCocktail(@RequestParam(value="mappingIngredientId", required = false) Long mappingIngredientId,
+                                  @RequestParam(value="mappingTasteId", required = false) Long mappingTasteId,
+                                  @RequestParam(value="mappingRecommendId", required = false) Long mappingRecommendId,
                                   @RequestParam Long cocktailId,
                                   @RequestParam List<Long> ingredientIds,
                                   @RequestParam Double quantity,
@@ -114,13 +122,13 @@ public class CocktailSaveController {
                                   @RequestParam Long tasteCategoryId,
                                   @RequestParam List<Long> tasteDetailIds,
                                   @RequestParam List<Long> moodIds,
-                                  @RequestParam List<Long> locationIds,
+                                  @RequestParam List<Long> situationIds,
                                   @RequestParam List<Long> seasonIds,
                                   Model model
                                   ){
         cocktailSaveService.setCocktailAddIngredient(mappingIngredientId, cocktailId, ingredientIds, quantity, unit);
-        cocktailSaveService.setCocktailAddTaste(cocktailId, tasteCategoryId, tasteDetailIds);
-        cocktailSaveService.setCocktailAddRecommand(cocktailId,moodIds, locationIds, seasonIds);
+        cocktailSaveService.setCocktailAddTaste(mappingTasteId,cocktailId, tasteCategoryId, tasteDetailIds);
+        cocktailSaveService.setCocktailAddRecommand(mappingRecommendId,cocktailId,moodIds, situationIds, seasonIds);
 
         return "redirect:/admin/cocktail/mapping";
     }

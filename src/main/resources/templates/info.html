@@ -1,185 +1,160 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
-    <title>Cocktail Info</title>
+    <meta charset="UTF-8">
+    <title>Cocktail Info Management</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
-        form { margin-bottom: 15px; }
-        .inline-form { display: inline; }
-        h2 { border-bottom: 1px solid #ccc; }
+        .form-container {
+          margin-bottom: 30px;
+          border: 1px solid #ccc;
+          padding: 10px;
+        }
+        .details {
+          display: none;
+          margin-top: 10px;
+        }
     </style>
+    <script>
+        $(document).ready(function() {
+          // Taste: Taste Category를 선택하면, 해당 카테고리의 Taste Detail 섹션만 보여준다.
+          $("#tasteCategorySelect").change(function(){
+              var selectedCatId = $(this).val();
+              // 모든 Taste Detail 컨테이너 숨김
+              $(".taste-detail-container").hide();
+              // 선택한 카테고리의 Taste Detail 컨테이너 보이기
+              $('.taste-detail-container[data-category-id="' + selectedCatId + '"]').show();
+          });
+        });
+    </script>
 </head>
 <body>
-<h1>Cocktail 정보 관리</h1>
+<h1>Cocktail Info Management</h1>
 
-<!-- 업데이트 결과 메시지 (flash message) -->
-<div th:if="${message}">
-    <p style="color: green;" th:text="${message}"></p>
-</div>
-
-<!-- 맛 카테고리 및 맛 디테일 -->
-<h2>맛 카테고리 및 맛 디테일</h2>
-<!-- taste는 Map (TasteCategory -> List&lt;TasteDetail&gt;)로 전달되었다고 가정 -->
-<div th:each="entry : ${taste}" th:with="tasteCategory=${entry.key}, tasteDetails=${entry.value}">
-    <h3>
-        맛 카테고리: <span th:text="${tasteCategory.tasteCategoryValue}"></span>
-        (ID: <span th:text="${tasteCategory.id}"></span>)
-    </h3>
-    <!-- 맛 카테고리 업데이트 폼 -->
-    <form th:action="@{/admin/cocktail/taste/category/update}" method="post">
-        <input type="hidden" name="id" th:value="${tasteCategory.id}" />
-        새 카테고리명:
-        <input type="text" name="tasteCategoryValue" th:value="${tasteCategory.tasteCategoryValue}" />
-        <input type="submit" value="카테고리 수정" />
-    </form>
-
-    <!-- 맛 디테일 검색 및 select -->
-    <label for="tasteDetailSearch-[[${tasteCategory.id}]]">맛 디테일 검색:</label>
-    <input type="text" id="tasteDetailSearch-[[${tasteCategory.id}]]"
-           onkeyup="filterSelect('tasteDetailSelect-[[${tasteCategory.id}]]', this.value)" placeholder="검색...">
-    <select id="tasteDetailSelect-[[${tasteCategory.id}]]">
-        <option th:each="detail : ${tasteDetails}" th:value="${detail.id}" th:text="${detail.tasteDetailValue}"></option>
+<!-- Taste Section (Taste Category 및 Detail) -->
+<div class="form-container">
+    <h2>Taste</h2>
+    <!-- Taste Category 선택 -->
+    <label for="tasteCategorySelect">Taste Category:</label>
+    <select id="tasteCategorySelect" name="tasteCategory">
+        <option value="">-- Select Taste Category --</option>
+        <!-- taste: Map&lt;TasteCategory, List&lt;TasteDetail&gt;&gt; -->
+        <option th:each="tc : ${taste.keySet()}"
+                th:value="${tc.id}"
+                th:text="${tc.tasteCategory}">Category</option>
     </select>
+    <br/><br/>
 
-    <!-- 맛 디테일 목록 및 수정 -->
-    <h4>맛 디테일 목록</h4>
-    <ul>
-        <li th:each="detail : ${tasteDetails}">
-            <span th:text="${detail.tasteDetailValue}"></span>
-            (ID: <span th:text="${detail.id}"></span>)
-            <!-- 맛 디테일 업데이트 폼 (인라인) -->
-            <form th:action="@{/admin/cocktail/taste/detail/update}" method="post" class="inline-form">
-                <input type="hidden" name="id" th:value="${detail.id}" />
-                <input type="hidden" name="tasteCategoryId" th:value="${tasteCategory.id}" />
-                새 디테일:
-                <input type="text" name="tasteDetailValue" th:value="${detail.tasteDetailValue}" />
-                <input type="submit" value="수정" />
+    <!-- Taste Detail 선택 영역: 각 Taste Category에 해당하는 Taste Details는 별도의 div로 감싼다 -->
+    <div id="tasteDetailContainer">
+        <div th:each="entry : ${taste}"
+             class="taste-detail-container"
+             th:attr="data-category-id=${entry.key.id}"
+             style="display:none;">
+            <label for="tasteDetailSelect_[[${entry.key.id}]]">Taste Detail for <span th:text="${entry.key.tasteCategory}">Category</span>:</label>
+            <select id="tasteDetailSelect_[[${entry.key.id}]]" name="tasteDetail">
+                <option value="">-- Select Taste Detail --</option>
+                <option th:each="detail : ${entry.value}"
+                        th:value="${detail.id}"
+                        th:text="${detail.tasteDetail}">Detail</option>
+            </select>
+            <br/><br/>
+            <!-- 수정 폼 (토글 방식) -->
+            <form th:action="@{/admin/cocktail/taste/detail/update}" method="post">
+                <input type="hidden" id="tasteDetailId_[[${entry.key.id}]]" name="id"/>
+                <input type="hidden" id="tasteCategoryId_[[${entry.key.id}]]" name="tasteCategoryId" th:value="${entry.key.id}" />
+                <input type="text" id="tasteDetailInput_[[${entry.key.id}]]" name="tasteDetailValue" placeholder="Taste Detail Value"/>
+                <button type="submit">Update Taste Detail</button>
             </form>
-        </li>
-    </ul>
-    <!-- 새로운 맛 디테일 추가 폼 -->
-    <form th:action="@{/admin/cocktail/taste/detail/update}" method="post">
-        <input type="hidden" name="tasteCategoryId" th:value="${tasteCategory.id}" />
-        새 맛 디테일:
-        <input type="text" name="tasteDetailValue" placeholder="추가할 맛 디테일 입력" />
-        <input type="submit" value="추가" />
+        </div>
+    </div>
+    <br/>
+    <!-- Taste Category 추가/수정 폼 -->
+    <form th:action="@{/admin/cocktail/taste/category/update}" method="post">
+        <input type="hidden" name="id" value=""/>
+        <input type="text" name="tasteCategoryValue" placeholder="New/Update Taste Category"/>
+        <button type="submit">Update Taste Category</button>
     </form>
-    <hr/>
 </div>
 
-<!-- 위치 관리 -->
-<h2>위치 관리</h2>
-<label for="locationSearch">검색:</label>
-<input type="text" id="locationSearch" onkeyup="filterSelect('locationSelect', this.value)" placeholder="검색...">
-<select id="locationSelect" name="locationId">
-    <option th:each="loc : ${locations}" th:value="${loc.id}" th:text="${loc.location}"></option>
-</select>
-<form th:action="@{/admin/cocktail/location/update}" method="post">
-    <!-- select에서 선택한 항목을 수정하거나, 아래 input으로 신규 항목 추가 가능 -->
-    <input type="hidden" name="id" value="" />
-    새 위치:
-    <input type="text" name="location" placeholder="새 위치 입력" />
-    <input type="submit" value="추가/수정" />
-</form>
+<!-- Situation Section -->
+<div class="form-container">
+    <h2>Situation</h2>
+    <label for="situationSelect">Situation List:</label>
+    <select id="situationSelect" name="situation">
+        <option value="">-- Select Situation --</option>
+        <option th:each="loc : ${situations}" th:value="${loc.id}" th:text="${loc.situation}">Situation</option>
+    </select>
+    <form id="situationForm" th:action="@{/admin/cocktail/situation/update}" method="post">
+        <input type="hidden" id="situationId" name="id"/>
+        <input type="text" id="situationInput" name="situation" placeholder="Situation"/>
+        <button type="submit">Update Situation</button>
+    </form>
+</div>
 
-<!-- 분위기 관리 -->
-<h2>분위기 관리</h2>
-<label for="moodSearch">검색:</label>
-<input type="text" id="moodSearch" onkeyup="filterSelect('moodSelect', this.value)" placeholder="검색...">
-<select id="moodSelect" name="moodId">
-    <option th:each="mood : ${moods}" th:value="${mood.id}" th:text="${mood.mood}"></option>
-</select>
-<form th:action="@{/admin/cocktail/mood/update}" method="post">
-    <input type="hidden" name="id" value="" />
-    새 분위기:
-    <input type="text" name="mood" placeholder="새 분위기 입력" />
-    <input type="submit" value="추가/수정" />
-</form>
+<!-- Mood Section -->
+<div class="form-container">
+    <h2>Mood</h2>
+    <label for="moodSelect">Mood List:</label>
+    <select id="moodSelect" name="mood">
+        <option value="">-- Select Mood --</option>
+        <option th:each="m : ${moods}" th:value="${m.id}" th:text="${m.mood}">Mood</option>
+    </select>
+    <form id="moodForm" th:action="@{/admin/cocktail/mood/update}" method="post">
+        <input type="hidden" id="moodId" name="id"/>
+        <input type="text" id="moodInput" name="mood" placeholder="Mood"/>
+        <button type="submit">Update Mood</button>
+    </form>
+</div>
 
-<!-- 계절 관리 -->
-<h2>계절 관리</h2>
-<label for="seasonSearch">검색:</label>
-<input type="text" id="seasonSearch" onkeyup="filterSelect('seasonSelect', this.value)" placeholder="검색...">
-<select id="seasonSelect" name="seasonId">
-    <option th:each="season : ${seasons}" th:value="${season.id}" th:text="${season.season}"></option>
-</select>
-<form th:action="@{/admin/cocktail/season/update}" method="post">
-    <input type="hidden" name="id" value="" />
-    새 계절:
-    <input type="text" name="season" placeholder="새 계절 입력" />
-    <input type="submit" value="추가/수정" />
-</form>
+<!-- Season Section -->
+<div class="form-container">
+    <h2>Season</h2>
+    <label for="seasonSelect">Season List:</label>
+    <select id="seasonSelect" name="season">
+        <option value="">-- Select Season --</option>
+        <option th:each="s : ${seasons}" th:value="${s.id}" th:text="${s.season}">Season</option>
+    </select>
+    <form id="seasonForm" th:action="@{/admin/cocktail/season/update}" method="post">
+        <input type="hidden" id="seasonId" name="id"/>
+        <input type="text" id="seasonInput" name="season" placeholder="Season"/>
+        <button type="submit">Update Season</button>
+    </form>
+</div>
 
-<!-- 재료 관리 -->
-<h2>재료 관리</h2>
-<label for="ingredientSearch">검색:</label>
-<input type="text" id="ingredientSearch" onkeyup="filterSelect('ingredientSelect', this.value)" placeholder="검색...">
-<select id="ingredientSelect" name="ingredientId">
-    <option th:each="ing : ${ingredients}" th:value="${ing.id}" th:text="${ing.material}"></option>
-</select>
-<form th:action="@{/admin/cocktail/ingredient/update}" method="post">
-    <input type="hidden" name="id" value="" />
-    새 재료:
-    <input type="text" name="material" placeholder="새 재료 입력" />
-    <input type="submit" value="추가/수정" />
-</form>
+<!-- Ingredient Section -->
+<div class="form-container">
+    <h2>Ingredient</h2>
+    <label for="ingredientSelect">Ingredient List:</label>
+    <select id="ingredientSelect" name="ingredient">
+        <option value="">-- Select Ingredient --</option>
+        <option th:each="ing : ${ingredients}" th:value="${ing.id}" th:text="${ing.material}">Ingredient</option>
+    </select>
+    <form id="ingredientForm" th:action="@{/admin/cocktail/ingredient/update}" method="post">
+        <input type="hidden" id="ingredientId" name="id"/>
+        <input type="text" id="ingredientInput" name="material" placeholder="Ingredient"/>
+        <button type="submit">Update Ingredient</button>
+    </form>
+</div>
 
-<!-- 칵테일 관리 -->
-<h2>칵테일 관리</h2>
-<label for="cocktailSearch">검색:</label>
-<input type="text" id="cocktailSearch" onkeyup="filterSelect('cocktailSelect', this.value)" placeholder="검색...">
-<select id="cocktailSelect" name="cocktailId">
-    <option th:each="cocktail : ${cocktails}" th:value="${cocktail.id}" th:text="${cocktail.cocktailName}"></option>
-</select>
-<ul>
-    <li th:each="cocktail : ${cocktails}">
-        <strong>칵테일 이름:</strong>
-        <span th:text="${cocktail.cocktailName}"></span>
-        (ID: <span th:text="${cocktail.id}"></span>)<br/>
-        크기: <span th:text="${cocktail.cocktailSize}"></span> |
-        설명: <span th:text="${cocktail.introduce}"></span> |
-        최대 도수: <span th:text="${cocktail.maxAlchol}"></span> |
-        최소 도수: <span th:text="${cocktail.minAlchol}"></span>
-        <br/>
-        <!-- 칵테일 수정 폼 -->
-        <form th:action="@{/admin/cocktail/update}" method="post">
-            <input type="hidden" name="id" th:value="${cocktail.id}" />
-            이름:
-            <input type="text" name="cocktailName" th:value="${cocktail.cocktailName}" /><br/>
-            크기:
-            <input type="number" name="cocktailSize" th:value="${cocktail.cocktailSize}" /><br/>
-            설명:
-            <input type="text" name="introduce" th:value="${cocktail.introduce}" /><br/>
-            최대 도수:
-            <input type="number" name="maxAlchol" th:value="${cocktail.maxAlchol}" /><br/>
-            최소 도수:
-            <input type="number" name="minAlchol" th:value="${cocktail.minAlchol}" /><br/>
-            <input type="submit" value="수정" />
-        </form>
-        <hr/>
-    </li>
-</ul>
-<h3>새 칵테일 추가</h3>
-<form th:action="@{/admin/cocktail/update}" method="post">
-    이름: <input type="text" name="cocktailName" placeholder="칵테일 이름" /><br/>
-    크기: <input type="number" name="cocktailSize" placeholder="크기" /><br/>
-    설명: <input type="text" name="introduce" placeholder="설명" /><br/>
-    최대 도수: <input type="number" name="maxAlchol" placeholder="최대 도수" /><br/>
-    최소 도수: <input type="number" name="minAlchol" placeholder="최소 도수" /><br/>
-    <input type="submit" value="추가" />
-</form>
+<!-- Cocktail Section -->
+<div class="form-container">
+    <h2>Cocktail</h2>
+    <label for="cocktailSelect">Cocktail List:</label>
+    <select id="cocktailSelect" name="cocktail">
+        <option value="">-- Select Cocktail --</option>
+        <option th:each="c : ${cocktails}" th:value="${c.id}" th:text="${c.cocktailName}">Cocktail</option>
+    </select>
+    <form id="cocktailForm" th:action="@{/admin/cocktail/update}" method="post">
+        <input type="hidden" id="cocktailId" name="id"/>
+        <input type="text" id="cocktailNameInput" name="cocktailName" placeholder="Cocktail Name"/>
+        <input type="text" name="cocktailSize" placeholder="Cocktail Size"/>
+        <input type="text" name="introduce" placeholder="Introduce"/>
+        <input type="text" name="maxAlchol" placeholder="Max Alcohol"/>
+        <input type="text" name="minAlchol" placeholder="Min Alcohol"/>
+        <button type="submit">Update Cocktail</button>
+    </form>
+</div>
 
-<!-- 검색 기능을 위한 JavaScript -->
-<script>
-    function filterSelect(selectId, filter) {
-        var select = document.getElementById(selectId);
-        var options = select.getElementsByTagName("option");
-        filter = filter.toUpperCase();
-        for (var i = 0; i < options.length; i++) {
-            var txtValue = options[i].textContent || options[i].innerText;
-            options[i].style.display = (txtValue.toUpperCase().indexOf(filter) > -1) ? "" : "none";
-        }
-    }
-</script>
 </body>
 </html>

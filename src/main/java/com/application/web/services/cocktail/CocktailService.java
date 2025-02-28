@@ -2,7 +2,8 @@ package com.application.web.services.cocktail;
 
 import com.application.common.Constant;
 import com.application.common.exception.custom.CustomApiException;
-import com.application.domain.cocktail.dto.ReqPersonalizeCocktail;
+import com.application.domain.cocktail.dto.CocktailInfoDto;
+import com.application.domain.cocktail.dto.ReqPersonalizeCocktailDto;
 import com.application.domain.cocktail.entity.cocktail.Cocktail;
 import com.application.domain.cocktail.entity.cocktail.Mapping.MappingIngredient;
 import com.application.domain.cocktail.entity.cocktail.Mapping.MappingRecommend;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @Slf4j
@@ -35,22 +37,20 @@ public class CocktailService {
     private final MappingRecommendRepository mappingRecommendRepository;
     private final CocktailRepository cocktailRepository;
     
-    //칵테일 전체 조회
-    public List<HashMap<String, Object>> getCocktailFindAll(){
-        List<HashMap<String, Object>> maps = new ArrayList<>();
+
+    public List<CocktailInfoDto> getCocktailFindAll(){
+        List<CocktailInfoDto> dtos = new ArrayList<>();
 
         List<Cocktail> cocktails = cocktailRepository.findAll();
 
         for (Cocktail cocktail : cocktails) {
-            HashMap<String, Object> map = getCocktailInfo(cocktail.getId());
-            maps.add(map);
+            CocktailInfoDto dto = getCocktailInfo(cocktail.getId());
+            dtos.add(dto);
         }
-
-        return maps;
+        return dtos;
     }
 
-    //칵테일 개별 정보 조회
-    public HashMap<String, Object> getCocktailInfo(Long id){
+    public CocktailInfoDto getCocktailInfo(Long id){
         HashMap<String, Object> map = new HashMap<>();
         Cocktail cocktail = cocktailRepository.findById(id).orElseThrow(
                 () -> new CustomApiException("칵테일이 존재하지 않습니다.")
@@ -60,32 +60,37 @@ public class CocktailService {
         List<MappingIngredient> ingredients = mappingIngredientRepository.findByCocktail(cocktail);
         List<MappingRecommend> recommends = mappingRecommendRepository.findByCocktail(cocktail);
 
-
-        map.put("cocktail", cocktail);
-        map.put("tastes", tastes);
-        map.put("ingredients", ingredients);
-        map.put("recommands", recommends);
-
-        return map;
+        return CocktailInfoDto.builder()
+                        .cocktail(cocktail)
+                        .mappingTaste(tastes)
+                        .mappingIngredient(ingredients)
+                        .mappingRecommend(recommends)
+                        .build();
     }
 
-    //칵테일 맛 카테고리 전체조회
     public List<TasteCategory> getTasteCategory(){
         return tasteCategoryRepository.findAll();
     }
-    
-    // 칵테일 디테일 맛 전체조회
     public List<TasteDetail> getTasteDetail(Long tasteCategoryId) {return tasteDetailRepository.findByTasteCategory(tasteCategoryId); }
 
-    public HashMap<String, Object> getPersonalizeCocktail(ReqPersonalizeCocktail personalizeCocktail){
-        
-        //맛
-        List<MappingTaste> mappingTastes = mappingTasteRepository.findPersonalizeCocktailAll(personalizeCocktail.getTasteCategoryId(), personalizeCocktail.getTasteDetailid());
+    public CocktailInfoDto getPersonalizeCocktail(ReqPersonalizeCocktailDto personalizeCocktail){
+        List<MappingTaste> filteredList = getFilteredCocktail(personalizeCocktail);
+        return randomCocktail(filteredList);
+    }
 
-        Integer alcholType =personalizeCocktail.getAlcholType();
-        List<MappingTaste> filteredList = mappingTastes;
-            
-        //도수
+    private List<MappingTaste> getFilteredCocktail(ReqPersonalizeCocktailDto dto){
+        return getAlcholType(getTaste(dto), dto.getAlcholType());
+    }
+
+    private List<MappingTaste> getTaste(ReqPersonalizeCocktailDto personalizeCocktail){
+        return mappingTasteRepository.findPersonalizeCocktailAll(personalizeCocktail.getTasteCategoryId(),
+                                                                 personalizeCocktail.getTasteDetailid());
+    }
+
+    private List<MappingTaste> getAlcholType(List<MappingTaste> mappingTastes, Integer alcholType){
+
+        List<MappingTaste> filteredList;
+
         switch (alcholType){
             case 1:
                 filteredList = mappingTastes.stream()
@@ -109,13 +114,15 @@ public class CocktailService {
                 filteredList = mappingTastes;
         }
 
-        //랜덤도출
-        Random rand = new Random();
-        rand.setSeed(System.currentTimeMillis());
-        int randomIndex = rand.nextInt(filteredList.size());
-
-        return getCocktailInfo(filteredList.get(randomIndex).getCocktail().getId());
+        return filteredList;
     }
 
+    private CocktailInfoDto randomCocktail(List<MappingTaste> filteredList){
+        if (filteredList.isEmpty()) {
+            throw new CustomApiException("No cocktail found");
+        }
+        int randomIndex = ThreadLocalRandom.current().nextInt(filteredList.size());
+        return getCocktailInfo(filteredList.get(randomIndex).getCocktail().getId());
+    }
 
 }

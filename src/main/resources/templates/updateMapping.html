@@ -28,7 +28,7 @@
 
     <h4>Ingredients</h4>
     <ul>
-        <li th:each="ingredient : ${cocktailMap.ingredient}"
+        <li th:each="ingredient : ${cocktailMap.mappingIngredient}"
             th:text="${ingredient}">Ingredient</li>
     </ul>
 
@@ -40,7 +40,7 @@
 
     <h4>Recommendations</h4>
     <ul>
-        <li th:each="recommand : ${cocktailMap.recommand}"
+        <li th:each="recommand : ${cocktailMap.mappingRecommend}"
             th:text="${recommand}">Recommendation</li>
     </ul>
 </div>
@@ -143,17 +143,17 @@
         </div>
     </div>
 
-    <!-- 지역 (locationIds) -->
+    <!-- 지역 (situationIds) -->
     <div class="form-group">
-        <label>Locations (지역)</label>
+        <label>Situations (지역)</label>
         <div class="checkbox-group">
             <div>
-                <input type="checkbox" id="location1" name="locationIds" value="1">
-                <label for="location1">지역 1</label>
+                <input type="checkbox" id="situation1" name="situationIds" value="1">
+                <label for="situation1">지역 1</label>
             </div>
             <div>
-                <input type="checkbox" id="location2" name="locationIds" value="2">
-                <label for="location2">지역 2</label>
+                <input type="checkbox" id="situation2" name="situationIds" value="2">
+                <label for="situation2">지역 2</label>
             </div>
         </div>
     </div>

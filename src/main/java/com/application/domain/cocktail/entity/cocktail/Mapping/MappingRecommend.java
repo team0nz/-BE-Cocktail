@@ -1,7 +1,7 @@
 package com.application.domain.cocktail.entity.cocktail.Mapping;
 
 import com.application.domain.cocktail.entity.cocktail.Cocktail;
-import com.application.domain.cocktail.entity.cocktail.recommand.Location;
+import com.application.domain.cocktail.entity.cocktail.recommand.Situation;
 import com.application.domain.cocktail.entity.cocktail.recommand.Mood;
 import com.application.domain.cocktail.entity.cocktail.recommand.Season;
 import jakarta.persistence.*;
@@ -19,7 +19,7 @@ public class MappingRecommend {
 
     @ManyToOne
     @JoinColumn
-    private Location location;
+    private Situation situation;
 
     @ManyToOne
     @JoinColumn
@@ -29,10 +29,18 @@ public class MappingRecommend {
     @JoinColumn
     private Season season;
 
+
     @Builder
-    public MappingRecommend(Cocktail cocktail, Location location, Mood mood, Season season){
+    public MappingRecommend(Cocktail cocktail, Situation situation, Mood mood, Season season){
         this.cocktail = cocktail;
-        this.location = location;
+        this.situation = situation;
+        this.mood = mood;
+        this.season = season;
+    }
+
+    public void update(Cocktail cocktail, Situation situation, Mood mood, Season season){
+        this.cocktail = cocktail;
+        this.situation = situation;
         this.mood = mood;
         this.season = season;
     }

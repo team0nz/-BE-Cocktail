@@ -1,6 +1,8 @@
 package com.application.web.services.cocktail;
 
 import com.application.common.exception.custom.CustomApiException;
+import com.application.domain.cocktail.dto.CocktailInfoDto;
+import com.application.domain.cocktail.dto.MappingRecommendDto;
 import com.application.domain.cocktail.entity.cocktail.Cocktail;
 import com.application.domain.cocktail.entity.cocktail.Ingredient;
 import com.application.domain.cocktail.entity.cocktail.Mapping.MappingIngredient;
@@ -8,7 +10,7 @@ import com.application.domain.cocktail.entity.cocktail.Mapping.MappingRecommend;
 import com.application.domain.cocktail.entity.cocktail.Mapping.MappingTaste;
 import com.application.domain.cocktail.entity.cocktail.TasteCategory;
 import com.application.domain.cocktail.entity.cocktail.TasteDetail;
-import com.application.domain.cocktail.entity.cocktail.recommand.Location;
+import com.application.domain.cocktail.entity.cocktail.recommand.Situation;
 import com.application.domain.cocktail.entity.cocktail.recommand.Mood;
 import com.application.domain.cocktail.entity.cocktail.recommand.Season;
 import com.application.domain.cocktail.repository.CocktailRepository;
@@ -18,17 +20,15 @@ import com.application.domain.cocktail.repository.Mapping.MappingRecommendReposi
 import com.application.domain.cocktail.repository.Mapping.MappingTasteRepository;
 import com.application.domain.cocktail.repository.TasteCategoryRepository;
 import com.application.domain.cocktail.repository.TasteDetailRepository;
-import com.application.domain.cocktail.repository.recommand.LocationRepository;
+import com.application.domain.cocktail.repository.recommand.SituationRepository;
 import com.application.domain.cocktail.repository.recommand.MoodRepository;
 import com.application.domain.cocktail.repository.recommand.SeasonRepository;
-import jakarta.transaction.TransactionScoped;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -41,33 +41,30 @@ public class CocktailSaveService {
     private final TasteCategoryRepository tasteCategoryRepository;
     private final TasteDetailRepository tasteDetailRepository;
 
-    private final LocationRepository locationRepository;
+    private final SituationRepository situationRepository;
     private final MoodRepository moodRepository;
     private final SeasonRepository seasonRepository;
 
     private final IngredientRepository ingredientRepository;
 
 
-    // CHECKME) DTO 설정 및 리펙토링
-    public List<HashMap<String, Object>> getCocktailsInfo(){
-        List<HashMap<String, Object>> maps = new ArrayList<>();
-        List<Cocktail> cocktails = cocktailRepository.findAll();
-        for (Cocktail cocktail : cocktails) {
-            HashMap<String,Object> map = new HashMap<>();
-            List<MappingIngredient>ingredients =  mappingIngredientRepository.findByCocktail(cocktail);
-            List<MappingTaste>tastes = mappingTasteRepository.findByCocktail(cocktail);
-            List<MappingRecommend> recommends = mappingRecommendRepository.findByCocktail(cocktail);
-
-            map.put("cocktail", cocktail);
-            map.put("taste", tastes);
-            map.put("recommand", recommends);
-            map.put("ingredient", ingredients);
-
-            maps.add(map);
-        }
-
-        return maps;
+    public List<CocktailInfoDto> getCocktailsInfo(){
+        return cocktailRepository.findAll().stream()
+                .map(cocktail -> {
+                    List<MappingIngredient> ingredients = mappingIngredientRepository.findByCocktail(cocktail);
+                    List<MappingTaste> tastes = mappingTasteRepository.findByCocktail(cocktail);
+                    List<MappingRecommend> recommends = mappingRecommendRepository.findByCocktail(cocktail);
+                    return CocktailInfoDto.builder()
+                            .cocktail(cocktail)
+                            .mappingIngredient(ingredients)
+                            .mappingTaste(tastes)
+                            .mappingRecommend(recommends)
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
+
+
     public List<Cocktail> getCocktailAll(){
         return cocktailRepository.findAll();
     }
@@ -77,8 +74,8 @@ public class CocktailSaveService {
     public List<TasteDetail> getTasteDetailAll(Long tasteCategoryid){
         return tasteDetailRepository.findByTasteCategory(tasteCategoryid);
     }
-    public List<Location> getLocationAll(){
-        return locationRepository.findAll();
+    public List<Situation> getSituationAll(){
+        return situationRepository.findAll();
     }
     public List<Mood> getMoodAll(){
         return moodRepository.findAll();
@@ -132,14 +129,14 @@ public class CocktailSaveService {
     }
 
     @Transactional
-    public void setLocation(Long id, String location){
-        Location newLocation = new Location(id, location);
-        if(newLocation.isNew()){
-            locationRepository.save(newLocation);
+    public void setSituation(Long id, String situation){
+        Situation newSituation = new Situation(id, situation);
+        if(newSituation.isNew()){
+            situationRepository.save(newSituation);
         }else{
-            Location oldLocation = locationRepository.findById(id).orElseThrow(() -> new CustomApiException("no exist location"));
-            oldLocation.update(newLocation);
-            locationRepository.save(oldLocation);
+            Situation oldSituation = situationRepository.findById(id).orElseThrow(() -> new CustomApiException("no exist situation"));
+            oldSituation.update(newSituation);
+            situationRepository.save(oldSituation);
         }
     }
 
@@ -220,54 +217,88 @@ public class CocktailSaveService {
         return mapping;
     }
 
-    
-    // 칵테일 + 맛 맵핑
-    //CHECKME) 리펙토링
     @Transactional
-    public void setCocktailAddTaste(Long cocktailId, Long tasteCategoryId, List<Long> tasteDetailIds){
+    public void setCocktailAddTaste(Long mappingtasteId,Long cocktailId, Long tasteCategoryId,
+                                    List<Long> tasteDetailIds){
         Cocktail cocktail = cocktailRepository.findById(cocktailId)
                 .orElseThrow(() -> new CustomApiException("no exist cocktail"));
-
         TasteCategory tasteCategory = tasteCategoryRepository.findById(tasteCategoryId)
                 .orElseThrow(() -> new CustomApiException("no exist tasteCategory"));
 
-        for (Long tasteDetailId : tasteDetailIds) {
-            TasteDetail tasteDetail = tasteDetailRepository.findById(tasteDetailId)
-                    .orElseThrow(()-> new CustomApiException("no exist tasteDetail"));
+        if(mappingtasteId == null){
+            saveMappingTaste(cocktail, tasteCategory, tasteDetailIds);
+        }else{
+            updateMappingTaste(mappingtasteId, cocktail, tasteCategory, tasteDetailIds);
+        }
+    }
 
+    private void saveMappingTaste(Cocktail cocktail, TasteCategory tasteCategory, List<Long> tasteDetailIds){
+        for (Long tasteDetailId : tasteDetailIds) {
+            TasteDetail tasteDetail = tasteDetailRepository.findById(tasteDetailId).orElseThrow(() -> new CustomApiException("no exist tasteDetail"));
             mappingTasteRepository.save(MappingTaste.builder()
                     .tasteCategory(tasteCategory)
                     .tasteDetail(tasteDetail)
                     .cocktail(cocktail)
                     .build());
         }
-
     }
 
-    
-    // 칵테일 + 분위기 맵핑
-    //CHECKME) 리펙토링
+    private void updateMappingTaste(Long mappingTasteId, Cocktail cocktail, TasteCategory tasteCategory, List<Long> tasteDetailIds){
+
+        MappingTaste mappingTaste = mappingTasteRepository.findById(mappingTasteId).orElseThrow(() -> new CustomApiException("no exist mapping taste"));
+
+        for (Long tasteDetailId : tasteDetailIds) {
+            TasteDetail tasteDetail = tasteDetailRepository.findById(tasteDetailId).orElseThrow(() -> new CustomApiException("no exist tasteDetail"));
+
+            mappingTaste.update(cocktail, tasteCategory, tasteDetail);
+        }
+    }
+
+
     @Transactional
-    public void setCocktailAddRecommand(Long cocktailId, List<Long> moodIds, List<Long> locationIds, List<Long> seasonIds){
+    public void setCocktailAddRecommand(Long mappingRecommendId, Long cocktailId, List<Long> moodIds, List<Long> situationIds, List<Long> seasonIds){
         Cocktail cocktail = cocktailRepository.findById(cocktailId).orElseThrow(() -> new CustomApiException("no exist cocktail"));
 
-        for (Long  locationId: locationIds) {
-            Location location = locationRepository.findById(locationId)
-                    .orElseThrow(() -> new CustomApiException("no exist location"));
-            for (Long moodId : moodIds) {
-                Mood mood = moodRepository.findById(moodId).orElseThrow(() -> new CustomApiException("no exist mood"));
-                for (Long seasonId : seasonIds) {
-                    Season season = seasonRepository.findById(seasonId).orElseThrow(()-> new CustomApiException("no exist season"));
+        situationIds.stream()
+                .map(situationId -> situationRepository.findById(situationId)
+                        .orElseThrow(() -> new CustomApiException("no exist situation")))
+                .flatMap(situation -> moodIds.stream()
+                        .map(moodId -> moodRepository.findById(moodId)
+                                .orElseThrow(() -> new CustomApiException("no exist mood")))
+                        .flatMap(mood -> seasonIds.stream()
+                                .map(seasonId -> seasonRepository.findById(seasonId)
+                                        .orElseThrow(() -> new CustomApiException("no exist season")))
+                                .map(season -> MappingRecommendDto.builder()
+                                        .mappingRecommendId(mappingRecommendId)
+                                        .cocktail(cocktail)
+                                        .situation(situation)
+                                        .mood(mood)
+                                        .season(season)
+                                        .build())
+                        )
+                )
+                .forEach(dto -> {
+                    if (dto.getMappingRecommendId() == null) {
+                        saveMappingRecommend(dto.getCocktail(), dto.getSituation(), dto.getMood(), dto.getSeason());
+                    } else {
+                        updateMappingRecommend(dto.getMappingRecommendId(), dto.getCocktail(), dto.getSituation(), dto.getMood(), dto.getSeason());
+                    }
+                });
+    }
 
-                    mappingRecommendRepository.save(MappingRecommend.builder()
-                                                                .location(location)
-                                                                .season(season)
-                                                                .mood(mood)
-                                                                .cocktail(cocktail)
-                                                                .build());
-                }
-            }
-        }
+    private void saveMappingRecommend(Cocktail cocktail, Situation situation, Mood mood, Season season){
+        mappingRecommendRepository.save(MappingRecommend.builder()
+                .situation(situation)
+                .season(season)
+                .mood(mood)
+                .cocktail(cocktail)
+                .build());
+    }
+
+    private void updateMappingRecommend(Long mappingRecommendId, Cocktail cocktail, Situation situation, Mood mood, Season season){
+        MappingRecommend mappingRecommend = mappingRecommendRepository.findById(mappingRecommendId).orElseThrow(() -> new CustomApiException("no exist reocmmend mapping"));
+
+        mappingRecommend.update(cocktail, situation, mood, season);
     }
 
 }
