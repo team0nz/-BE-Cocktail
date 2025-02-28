@@ -9,4 +9,5 @@ import java.util.List;
 public interface MenuRepository extends JpaRepository<Menu, Long> {
 
     List<Menu> findAllByBar(Bar bar);
+    List<Menu> findTop5ByBar(Bar bar);
 }

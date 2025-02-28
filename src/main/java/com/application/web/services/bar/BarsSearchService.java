@@ -49,7 +49,7 @@ public class BarsSearchService {
 
     public Page<BarSearchResponse> getBarSearchResponses(Page<Bar> bars) {
         return bars.map(bar -> {
-            List<Menu> menus = menuRepository.findAllByBar(bar);
+            List<Menu> menus = menuRepository.findTop5ByBar(bar);
             BarImage barImage = barImageRepository.findFirstByBar(bar);
 
             return BarSearchResponse.from(bar, menus, barImage);
