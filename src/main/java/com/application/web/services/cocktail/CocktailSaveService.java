@@ -2,6 +2,7 @@ package com.application.web.services.cocktail;
 
 import com.application.common.exception.custom.CustomApiException;
 import com.application.domain.cocktail.dto.CocktailInfoDto;
+import com.application.domain.cocktail.dto.IngredientSaveDto;
 import com.application.domain.cocktail.dto.MappingRecommendDto;
 import com.application.domain.cocktail.entity.cocktail.Cocktail;
 import com.application.domain.cocktail.entity.cocktail.Ingredient;
@@ -64,7 +65,15 @@ public class CocktailSaveService {
                 .collect(Collectors.toList());
     }
 
+    public List<Cocktail> getNoMappingCocktail(){
+        //맵핑 되어있는 칵테일 id 찾고 리스트 정렬
+        mappingIngredientRepository.findAll();
+        mappingRecommendRepository.findAll();
+        mappingTasteRepository.findAll();
 
+        // 리스트 제외한 칵테일 id 리스트 정렬 리턴;
+        return null;
+    }
     public List<Cocktail> getCocktailAll(){
         return cocktailRepository.findAll();
     }
@@ -179,19 +188,17 @@ public class CocktailSaveService {
 
 
     @Transactional
-    public void setCocktailAddIngredient(Long mappingIngredientId, Long cocktailid, List<Long> ingredientIds,
-                                         Double quantity, String unit) {
-
+    public void setCocktailAddIngredient(Long mappingIngredientId, Long cocktailid, List<IngredientSaveDto> dtos) {
         Cocktail cocktail = cocktailRepository.findById(cocktailid)
                 .orElseThrow(() -> new CustomApiException("no exist cocktail"));
-        List<Ingredient> ingredients = ingredientRepository.findAll();
 
-        for (Ingredient ingredient : ingredients) {
+        for (IngredientSaveDto dto : dtos) {
+            Ingredient ingredient = ingredientRepository.findById(dto.getIngredientId()).orElseThrow( ()-> new CustomApiException("no exist ingredient"));
             if(mappingIngredientId == null){
-                MappingIngredient mappingIngredient = saveMappingIngredient(cocktail, ingredient,quantity, unit );
+                MappingIngredient mappingIngredient = saveMappingIngredient(cocktail, ingredient, dto.getQuantity(), dto.getUnit());
                 mappingIngredientRepository.save(mappingIngredient);
             }else{
-                MappingIngredient mappingIngredient = updateMappingIngredient(mappingIngredientId, cocktail, ingredient, quantity, unit);
+                MappingIngredient mappingIngredient = updateMappingIngredient(mappingIngredientId, cocktail, ingredient, dto.getQuantity(), dto.getUnit());
                 mappingIngredientRepository.save(mappingIngredient);
             }
         }

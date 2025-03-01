@@ -6,8 +6,10 @@ import com.application.domain.cocktail.entity.cocktail.recommand.Mood;
 import com.application.domain.cocktail.entity.cocktail.recommand.Season;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
 
 @Entity(name="mapping_recommend")
+@Getter
 public class MappingRecommend {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,6 +31,7 @@ public class MappingRecommend {
     @JoinColumn
     private Season season;
 
+    protected  MappingRecommend(){}
 
     @Builder
     public MappingRecommend(Cocktail cocktail, Situation situation, Mood mood, Season season){

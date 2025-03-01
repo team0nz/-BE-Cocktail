@@ -4,9 +4,11 @@ import com.application.domain.cocktail.entity.cocktail.Cocktail;
 import com.application.domain.cocktail.entity.cocktail.Ingredient;
 import jakarta.persistence.*;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity(name = "mapping_ingredient")
+@Getter
 public class MappingIngredient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +28,7 @@ public class MappingIngredient {
     @Column
     private String unit;
 
+    protected MappingIngredient() {}
 
     @Builder
     public MappingIngredient(Ingredient ingredient, Cocktail cocktail,

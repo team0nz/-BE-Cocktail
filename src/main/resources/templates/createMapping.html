@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Cocktail Mapping</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .section {
+          border: 1px solid #ccc;
+          margin-bottom: 20px;
+          padding: 15px;
+        }
+        label {
+          display: block;
+          margin-top: 10px;
+        }
+        select, input[type="text"] {
+          width: 300px;
+          padding: 5px;
+          margin-top: 5px;
+        }
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 10px;
+        }
+        table, th, td {
+          border: 1px solid #ccc;
+        }
+        th, td {
+          padding: 8px;
+          text-align: left;
+        }
+        .remove-btn {
+          background-color: #f44336;
+          color: white;
+          border: none;
+          padding: 5px 10px;
+          cursor: pointer;
+        }
+        .add-btn {
+          margin-top: 10px;
+          padding: 5px 10px;
+          cursor: pointer;
+        }
+    </style>
+    <script>
+        $(document).ready(function(){
+          // Taste Category 선택 시 해당 카테고리에 속한 Taste Detail 옵션만 표시
+          $("#tasteCategorySelect").change(function(){
+            var selectedCat = $(this).val();
+            $("#tasteDetailSelect option").hide();
+            $("#tasteDetailSelect option.default").show();
+            $("#tasteDetailSelect option[data-category='" + selectedCat + "']").show();
+          });
+
+          // 재료 동적 행 추가
+          var ingredientIndex = 0;
+          $("#addIngredientRow").click(function(){
+            ingredientIndex++;
+            var newRow = '<tr>' +
+                '<td>' +
+                  '<select name="ingredientDtos[' + ingredientIndex + '].ingredientId" required>' +
+                    $("#ingredientOptionsTemplate").html() +
+                  '</select>' +
+                '</td>' +
+                '<td>' +
+                  '<input type="text" name="ingredientDtos[' + ingredientIndex + '].quantity" placeholder="Enter quantity" required/>' +
+                '</td>' +
+                '<td>' +
+                  '<input type="text" name="ingredientDtos[' + ingredientIndex + '].unit" placeholder="Enter unit" required/>' +
+                '</td>' +
+                '<td>' +
+                  '<button type="button" class="remove-btn" onclick="removeIngredientRow(this)">Remove</button>' +
+                '</td>' +
+              '</tr>';
+            $("#ingredientTable tbody").append(newRow);
+          });
+        });
+
+        function removeIngredientRow(button){
+          $(button).closest("tr").remove();
+        }
+    </script>
+</head>
+<body>
+<h1>Create Cocktail Mapping</h1>
+<form th:action="@{/admin/cocktail/mapping/create}" method="post">
+    <!-- Cocktail Section -->
+    <div class="section">
+        <h2>Cocktail</h2>
+        <label for="cocktailSelect">Select Cocktail:</label>
+        <select id="cocktailSelect" name="cocktailId" required>
+            <option value="">-- Select Cocktail --</option>
+            <option th:each="cocktail : ${cocktails}"
+                    th:value="${cocktail.id}"
+                    th:text="${cocktail.cocktailName}">Cocktail Name</option>
+        </select>
+    </div>
+
+    <!-- Ingredient Mapping Section -->
+    <div class="section">
+        <h2>Ingredients</h2>
+        <table id="ingredientTable">
+            <thead>
+            <tr>
+                <th>Ingredient</th>
+                <th>Quantity</th>
+                <th>Unit</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 초기 행 (index 0) -->
+            <tr>
+                <td>
+                    <select name="ingredientDtos[0].ingredientId" required>
+                        <option value="">-- Select Ingredient --</option>
+                        <option th:each="ingredient : ${ingredientInfos}"
+                                th:value="${ingredient.id}"
+                                th:text="${ingredient.material}">Ingredient</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="text" name="ingredientDtos[0].quantity" placeholder="Enter quantity" required/>
+                </td>
+                <td>
+                    <input type="text" name="ingredientDtos[0].unit" placeholder="Enter unit" required/>
+                </td>
+                <td>
+                    <button type="button" class="remove-btn" onclick="removeIngredientRow(this)">Remove</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <button type="button" id="addIngredientRow" class="add-btn">Add Ingredient</button>
+        <!-- 재료 옵션 템플릿 (동적 행 추가 시 사용) -->
+        <div id="ingredientOptionsTemplate" style="display: none;">
+            <option value="">-- Select Ingredient --</option>
+            <th:block th:each="ingredient : ${ingredientInfos}">
+                <option th:value="${ingredient.id}" th:text="${ingredient.material}">Ingredient</option>
+            </th:block>
+        </div>
+    </div>
+
+    <!-- Taste Mapping Section -->
+    <div class="section">
+        <h2>Taste</h2>
+        <label for="tasteCategorySelect">Taste Category:</label>
+        <select id="tasteCategorySelect" name="tasteCategoryId" required>
+            <option value="">-- Select Taste Category --</option>
+            <!-- taste 맵의 키(카테고리)를 반복 -->
+            <option th:each="entry : ${taste}"
+                    th:value="${entry.key.id}"
+                    th:text="${entry.key.tasteCategory}">Taste Category</option>
+        </select>
+        <br/>
+        <label for="tasteDetailSelect">Taste Details:</label>
+        <select id="tasteDetailSelect" name="tasteDetailIds" multiple size="5">
+            <option value="" class="default">-- Select Taste Details --</option>
+            <!-- taste 맵의 각 카테고리에 속한 taste detail 목록 출력 -->
+            <th:block th:each="entry : ${taste}">
+                <option th:each="td : ${entry.value}"
+                        th:value="${td.id}"
+                        th:text="${td.tasteDetail}"
+                        th:attr="data-category=${entry.key.id}">Taste Detail</option>
+            </th:block>
+        </select>
+    </div>
+
+    <!-- Recommend Mapping Section -->
+    <div class="section">
+        <h2>Recommend Mapping</h2>
+        <label for="moodSelect">Select Moods:</label>
+        <select id="moodSelect" name="moodIds" multiple size="5">
+            <option value="">-- Select Moods --</option>
+            <option th:each="mood : ${moodInfos}"
+                    th:value="${mood.id}"
+                    th:text="${mood.mood}">Mood</option>
+        </select>
+        <br/>
+        <label for="situationSelect">Select Situations:</label>
+        <select id="situationSelect" name="situationIds" multiple size="5">
+            <option value="">-- Select Situations --</option>
+            <option th:each="situation : ${situationInfos}"
+                    th:value="${situation.id}"
+                    th:text="${situation.situation}">Situation</option>
+        </select>
+        <br/>
+        <label for="seasonSelect">Select Seasons:</label>
+        <select id="seasonSelect" name="seasonIds" multiple size="5">
+            <option value="">-- Select Seasons --</option>
+            <option th:each="season : ${seasonInfos}"
+                    th:value="${season.id}"
+                    th:text="${season.season}">Season</option>
+        </select>
+    </div>
+
+    <div class="section">
+        <button type="submit">Create Mapping</button>
+    </div>
+</form>
+</body>
+</html>

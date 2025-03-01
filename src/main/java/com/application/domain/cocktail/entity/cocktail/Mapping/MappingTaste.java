@@ -26,6 +26,8 @@ public class MappingTaste {
     @JoinColumn(name="cocktail_id", nullable = false)
     private Cocktail cocktail;
 
+    protected  MappingTaste (){}
+
     @Builder
     public MappingTaste(TasteCategory tasteCategory, TasteDetail tasteDetail, Cocktail cocktail){
         this.tasteCategory = tasteCategory;
