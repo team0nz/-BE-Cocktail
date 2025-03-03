@@ -114,7 +114,7 @@ public class OAuth2Service {
         String creadentialId = getCredentialId(userInfo, provider);
         Member existMember = memberService.getMemberByCredentialId(creadentialId);
 
-
+        log.info("userInfo : {}", userInfo);
         if (existMember == null){
             String name = (userInfo.get("name") != null) ? (String)userInfo.get("name") : "no name";
             Member newMember = new Member();

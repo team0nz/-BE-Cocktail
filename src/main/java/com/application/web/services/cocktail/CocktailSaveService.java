@@ -2,7 +2,7 @@ package com.application.web.services.cocktail;
 
 import com.application.common.exception.custom.CustomApiException;
 import com.application.domain.cocktail.dto.CocktailInfoDto;
-import com.application.domain.cocktail.dto.IngredientSaveDto;
+import com.application.domain.cocktail.dto.cocktailDataPageDto.IngredientSaveDto;
 import com.application.domain.cocktail.dto.MappingRecommendDto;
 import com.application.domain.cocktail.entity.cocktail.Cocktail;
 import com.application.domain.cocktail.entity.cocktail.Ingredient;
@@ -256,7 +256,6 @@ public class CocktailSaveService {
 
         for (Long tasteDetailId : tasteDetailIds) {
             TasteDetail tasteDetail = tasteDetailRepository.findById(tasteDetailId).orElseThrow(() -> new CustomApiException("no exist tasteDetail"));
-
             mappingTaste.update(cocktail, tasteCategory, tasteDetail);
         }
     }

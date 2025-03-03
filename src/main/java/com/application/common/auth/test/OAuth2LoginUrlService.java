@@ -1,10 +1,14 @@
 package com.application.common.auth.test;
 
+import com.application.common.exception.custom.CustomApiException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.net.URLEncoder;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class OAuth2LoginUrlService {
 
@@ -35,7 +39,12 @@ public class OAuth2LoginUrlService {
 
     // 구글 로그인 URL 생성
     public String getGoogleLoginUrl() {
-        return String.format("%s?client_id=%s&redirect_uri=%s&response_type=code&scope=email&profile",
-                googleAuthUri, googleClientId, googleRedirectUri);
+        try{
+            String scope = URLEncoder.encode("email profile https://www.googleapis.com/auth/user.phonenumbers.read", "UTF-8");
+            return String.format("%s?client_id=%s&redirect_uri=%s&response_type=code&scope=%s",
+                    googleAuthUri, googleClientId, googleRedirectUri, scope);
+        }catch(Exception e){
+            throw new CustomApiException("error");
+        }
     }
 }

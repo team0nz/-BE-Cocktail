@@ -1,9 +1,7 @@
-package com.application.domain.cocktail.dto;
+package com.application.domain.cocktail.dto.cocktailDataPageDto;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter

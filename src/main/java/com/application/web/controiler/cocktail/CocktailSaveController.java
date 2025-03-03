@@ -1,11 +1,11 @@
 package com.application.web.controiler.cocktail;
 
-import com.application.domain.cocktail.dto.*;
-import com.application.domain.cocktail.entity.cocktail.Mapping.MappingTaste;
+import com.application.domain.cocktail.dto.cocktailDataPageDto.*;
 import com.application.domain.cocktail.entity.cocktail.TasteCategory;
 import com.application.domain.cocktail.entity.cocktail.TasteDetail;
 import com.application.web.services.cocktail.CocktailSaveService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/admin/cocktail")
+@Slf4j
 public class CocktailSaveController {
     private final CocktailSaveService cocktailSaveService;
 
@@ -117,6 +118,7 @@ public class CocktailSaveController {
         }
 
         for (TasteMappingDto dto : mappingDto.getTasteMappingDtos()) {
+            log.info("{}", dto);
             cocktailSaveService.setCocktailAddTaste(
                     dto.getMappingTasteId(), mappingDto.getCocktailId(), dto.getTasteCategoryId(), List.of(dto.getTasteDetailId()));
         }
